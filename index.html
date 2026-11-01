@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luces, Cámara, IA 🎬 — Crea tus películas con Google Flow</title>
+  <meta name="description" content="Luces, Cámara, IA: estudio de cine escolar para crear prompts de Google Flow. Elige plantilla, rellena el formulario y copia tu prompt.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/estilos.css">
+</head>
+<body>
+  <!-- Aviso de borrador sin publicar (solo navegador del profe) -->
+  <div id="aviso-borrador" class="aviso-borrador" hidden>
+    ⚠️ Tienes cambios guardados en este navegador. Pulsa <b>💾 Exportar biblioteca.js</b> y súbelo a GitHub para que los alumnos los vean.
+  </div>
+
+  <!-- Barra superior del modo profe -->
+  <div id="barra-profe" class="barra-profe" hidden>
+    <span class="barra-profe__titulo">👩‍🏫 MODO PROFE ACTIVO</span>
+    <button class="btn3d btn3d--sm btn3d--amarillo" data-profe="nuevo">➕ Nueva plantilla / pieza</button>
+    <button class="btn3d btn3d--sm btn3d--verde" data-profe="exportar">💾 Exportar biblioteca.js</button>
+    <button class="btn3d btn3d--sm btn3d--blanco" data-profe="importar">📂 Importar</button>
+    <button class="btn3d btn3d--sm btn3d--blanco" data-profe="descartar">↩️ Descartar borrador</button>
+    <button class="btn3d btn3d--sm btn3d--rojo" data-profe="salir">🚪 Salir</button>
+    <input type="file" id="input-importar" accept=".js,.json" hidden>
+  </div>
+
+  <!-- Cabecera estilo videojuego / estudio de cine -->
+  <header class="cabecera">
+    <div class="cabecera__izq">
+      <button id="logo" class="claqueta" title="Inicio (5 clics para Modo Profe)" aria-label="Inicio">
+        <span class="claqueta__top"></span>
+        <span class="claqueta__icono">🎬</span>
+      </button>
+      <div>
+        <div class="cabecera__insignia">🎥 ESTUDIO DE CINE ESCOLAR · 5° Y 6°</div>
+        <h1 id="titulo-app">Luces, Cámara, IA</h1>
+        <p id="subtitulo-app" class="cabecera__sub"></p>
+      </div>
+    </div>
+
+    <div class="cabecera__der">
+      <button id="btn-azar-global" class="btn3d btn3d--amarillo" title="Elige una plantilla y rellénala al azar">
+        🎲 ¡Sorpréndeme!
+      </button>
+      <button id="btn-ayuda" class="btn3d btn3d--blanco">
+        ❓ ¿Cómo funciona?
+      </button>
+      <a class="btn3d btn3d--morado" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">
+        🚀 Abrir Google Flow ↗
+      </a>
+    </div>
+  </header>
+
+  <!-- Selector de modo principal -->
+  <nav id="tabs-modo" class="tabs-modo" aria-label="Secciones del estudio">
+    <button class="tab-modo activa" data-modo="produccion" style="--c:#22c55e">
+      <span class="tab-modo__emoji">🎞️</span>
+      <div>
+        <strong>Mi Película</strong>
+        <small>Personajes → Escenario → Escenas</small>
+      </div>
+    </button>
+    <button class="tab-modo" data-modo="video" style="--c:#ff595e">
+      <span class="tab-modo__emoji">🎬</span>
+      <div>
+        <strong>Escenas de Video</strong>
+        <small>Historias listas para rellenar</small>
+      </div>
+    </button>
+    <button class="tab-modo" data-modo="camara" style="--c:#1982c4">
+      <span class="tab-modo__emoji">🎥</span>
+      <div>
+        <strong>Laboratorio de Cámara</strong>
+        <small>Aprende y prueba cada movimiento</small>
+      </div>
+    </button>
+    <button class="tab-modo" data-modo="imagen" style="--c:#ff924c">
+      <span class="tab-modo__emoji">🖼️</span>
+      <div>
+        <strong>Crear Imágenes</strong>
+        <small>Portadas, pósters y personajes</small>
+      </div>
+    </button>
+    <button class="tab-modo" data-modo="piezas" style="--c:#8ac926">
+      <span class="tab-modo__emoji">🧩</span>
+      <div>
+        <strong>Catálogo de Piezas</strong>
+        <small>Estilos, personajes, mundos y sonidos</small>
+      </div>
+    </button>
+  </nav>
+
+  <!-- ==================== VISTA 0: MI PELÍCULA (producción por etapas) ==================== -->
+  <section id="vista-produccion" class="produccion" hidden></section>
+
+  <!-- ==================== VISTA 1: ESTUDIO CONSTRUCTOR ==================== -->
+  <main id="vista-estudio" class="estudio">
+    <!-- Columna izquierda: Plantillas para elegir -->
+    <aside class="panel panel--plantillas">
+      <div class="panel__cab">
+        <span class="paso-pill">PASO 1</span>
+        <h2 id="titulo-paso1">Elige tu plantilla</h2>
+      </div>
+
+      <div class="filtros-plantillas">
+        <label class="buscador">
+          <span>🔎</span>
+          <input id="buscar-plantilla" type="search" placeholder="Buscar plantilla o cámara…" autocomplete="off">
+        </label>
+        <button id="btn-solo-favs" class="btn-fav-filtro" aria-pressed="false" title="Ver solo mis favoritos">
+          ⭐ Favoritos
+        </button>
+      </div>
+
+      <div id="etiquetas-plantillas" class="chips-bar"></div>
+
+      <div id="lista-plantillas" class="lista-plantillas" role="listbox" aria-label="Plantillas disponibles"></div>
+    </aside>
+
+    <!-- Columna central: Formulario interactivo de variables -->
+    <section class="panel panel--formulario" aria-live="polite">
+      <div id="ficha-plantilla" class="ficha-plantilla"></div>
+
+      <div class="panel__cab panel__cab--form">
+        <span class="paso-pill paso-pill--2">PASO 2</span>
+        <div>
+          <h2>Rellena el formulario de tu escena</h2>
+          <p class="panel__sub">Cambia las opciones o escribe tus propias ideas. ¡El prompt se arma solo!</p>
+        </div>
+        <div class="acciones-form">
+          <button id="btn-azar-campos" class="btn3d btn3d--sm btn3d--amarillo" title="Rellenar todos los campos al azar">
+            🎲 Rellenar al azar
+          </button>
+          <button id="btn-reiniciar" class="btn3d btn3d--sm btn3d--blanco" title="Volver a las sugerencias iniciales">
+            🔄 Reiniciar
+          </button>
+        </div>
+      </div>
+
+      <div id="contenedor-formulario" class="formulario-vars"></div>
+    </section>
+
+    <!-- Columna derecha: Claqueta con el prompt listo + Videos de YouTube -->
+    <aside class="panel panel--resultado">
+      <div class="claqueta-card">
+        <div class="claqueta-card__franjas"></div>
+        <div class="claqueta-card__cuerpo">
+          <div class="claqueta-card__top">
+            <span class="paso-pill paso-pill--3">PASO 3</span>
+            <h2>Tu Prompt Listo</h2>
+            <span id="estado-prompt" class="estado-prompt"></span>
+          </div>
+
+          <div id="vista-previa" class="vista-previa"></div>
+
+          <div class="claqueta-card__botones">
+            <button id="btn-copiar" class="btn3d btn3d--gigante btn3d--verde">
+              📋 ¡COPIAR MI PROMPT!
+            </button>
+            <a class="btn3d btn3d--morado btn3d--bloque" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">
+              🚀 Ir a pegarlo en Flow ↗
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monitor de resultados en YouTube -->
+      <div class="tv-card">
+        <div class="tv-card__cab">
+          <span>📺 Monitor de Resultados en YouTube</span>
+          <button id="btn-agregar-video-rapido" class="btn3d btn3d--sm btn3d--amarillo solo-profe" title="Agregar o editar links de YouTube de esta plantilla">
+            ➕ Poner link YouTube
+          </button>
+        </div>
+        <div id="contenedor-videos" class="tv-card__cuerpo"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ==================== VISTA 2: CATÁLOGO DE PIEZAS ==================== -->
+  <section id="vista-piezas" class="catalogo-piezas" hidden>
+    <div class="catalogo-piezas__cab">
+      <div>
+        <h2>🧩 Catálogo de Piezas del Estudio</h2>
+        <p>Estas piezas aparecen en las listas desplegables cuando armas una escena. ¡También puedes copiarlas o mirar sus ejemplos!</p>
+      </div>
+      <div id="subtabs-piezas" class="subtabs-piezas"></div>
+    </div>
+    <div id="grilla-piezas" class="grilla-piezas"></div>
+  </section>
+
+  <!-- ==================== MODAL SELECTOR VISUAL DE PIEZAS ==================== -->
+  <dialog id="dlg-selector" class="dialogo dialogo--grande">
+    <div class="modal">
+      <div class="modal__cab">
+        <h2 id="selector-titulo">Elige una opción</h2>
+        <button type="button" class="btn-cerrar" data-cerrar aria-label="Cerrar">✕</button>
+      </div>
+      <p id="selector-sub" class="modal__sub"></p>
+      <div id="selector-grilla" class="selector-grilla"></div>
+    </div>
+  </dialog>
+
+  <!-- ==================== MODAL EDITOR (MODO PROFE) ==================== -->
+  <dialog id="dlg-editor" class="dialogo dialogo--grande">
+    <form id="form-editor" class="modal" method="dialog">
+      <div class="modal__cab">
+        <h2 id="editor-titulo">Editar plantilla</h2>
+        <button type="button" class="btn-cerrar" data-cerrar aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="campos-editor">
+        <div class="fila-2">
+          <label>Categoría
+            <select name="categoria" required></select>
+          </label>
+          <label>Emoji / Ícono de la tarjeta
+            <input name="icono" maxlength="4" placeholder="🎬">
+          </label>
+        </div>
+
+        <div class="fila-2">
+          <label>Título para los alumnos
+            <input name="titulo" required maxlength="90" placeholder="Ej: Acercarse despacio (Dolly In)">
+          </label>
+          <label>Nombre técnico / Comando (opcional, para cámara)
+            <input name="comando" maxlength="70" placeholder="Ej: Dolly In (Acercamiento)">
+          </label>
+        </div>
+
+        <label>Explicación sencilla para niños de 5° y 6°
+          <textarea name="descripcion" rows="2" placeholder="Explica qué hace este prompt o cuándo conviene usarlo"></textarea>
+        </label>
+
+        <label>Prompt prefabricado (con variables entre llaves <code>{...}</code>)
+          <textarea name="prompt" rows="5" required placeholder="Video en estilo {estilo}. En {escenario}, aparece {personaje} mientras {accion:saluda a la cámara}. Movimiento de cámara: {camara}. Audio: {audio}."></textarea>
+          <div class="ayuda-vars">
+            <b>Insertar variable rápida:</b>
+            <button type="button" class="chip-insert" data-ins="{estilo}">+ {estilo}</button>
+            <button type="button" class="chip-insert" data-ins="{personaje}">+ {personaje}</button>
+            <button type="button" class="chip-insert" data-ins="{escenario}">+ {escenario}</button>
+            <button type="button" class="chip-insert" data-ins="{camara}">+ {camara}</button>
+            <button type="button" class="chip-insert" data-ins="{audio}">+ {audio}</button>
+            <button type="button" class="chip-insert" data-ins="{accion:escribe aquí un ejemplo}">+ {texto con ejemplo}</button>
+            <button type="button" class="chip-insert" data-ins="{clima|soleado|lluvioso|nevando}">+ {lista de opciones}</button>
+          </div>
+          <div id="editor-vars-detectadas" class="editor-vars"></div>
+        </label>
+
+        <label>Texto corto cuando se usa como pieza dentro de otro prompt <small>(solo para Cámara, Estilo, Personaje, Escenario o Audio; si lo dejas vacío usa el prompt de arriba)</small>
+          <input name="fragmento" placeholder="Ej: la cámara avanza lentamente hacia el personaje (dolly in)">
+        </label>
+
+        <div class="fila-2">
+          <label>Animación del diagrama de cámara <small>(solo categoría Cámara)</small>
+            <select name="anim">
+              <option value="">Sin diagrama animado</option>
+              <option value="dolly-in">🎯 Dolly In (Acercarse)</option>
+              <option value="dolly-out">🔭 Dolly Out (Alejarse)</option>
+              <option value="orbita">🪐 Órbita 360° (Girar alrededor)</option>
+              <option value="tracking">🏃 Tracking (Seguir al personaje)</option>
+              <option value="truck">🛤️ Travelling lateral (Deslizar de lado)</option>
+              <option value="pan">👀 Pan / Paneo (Girar la cámara)</option>
+              <option value="tilt">🦒 Tilt Up (Mirar hacia arriba)</option>
+              <option value="dron">🚁 Dron aéreo (Vuelo alto)</option>
+              <option value="grua">🏗️ Grúa / Crane (Subir desde el suelo)</option>
+              <option value="fpv">🦅 Dron FPV (Vuelo veloz)</option>
+              <option value="low-angle">🦸 Contrapicado (Desde abajo)</option>
+              <option value="high-angle">🔍 Picado (Desde arriba)</option>
+              <option value="pov">🥽 POV (Primera persona)</option>
+              <option value="close-up">😊 Primer plano (Cara de cerca)</option>
+              <option value="wide">🏔️ Plano general (Todo el paisaje)</option>
+              <option value="macro">🐞 Macro / Plano detalle</option>
+              <option value="static">📷 Cámara fija en trípode</option>
+              <option value="handheld">📱 Cámara en mano</option>
+              <option value="slowmo">🐢 Cámara lenta (Slow Motion)</option>
+              <option value="timelapse">⏩ Time-lapse (Tiempo rápido)</option>
+            </select>
+          </label>
+          <label>Etiquetas <small>(separadas por coma)</small>
+            <input name="etiquetas" placeholder="aventura, básico, movimiento">
+          </label>
+        </div>
+
+        <label>📺 Links de resultados en YouTube <small>(uno por línea; opcional: <code>https://youtu.be/... | Título del ejemplo</code>)</small>
+          <textarea name="videos" rows="3" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx | Ejemplo hecho en clases"></textarea>
+        </label>
+      </div>
+
+      <div class="modal__pie">
+        <button type="button" class="btn3d btn3d--blanco" data-cerrar>Cancelar</button>
+        <button type="submit" class="btn3d btn3d--verde">💾 Guardar cambios</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ==================== MODAL AYUDA ==================== -->
+  <dialog id="dlg-ayuda" class="dialogo">
+    <div class="modal">
+      <div class="modal__cab">
+        <h2>🎬 ¿Cómo crear tu película en 3 pasos?</h2>
+        <button type="button" class="btn-cerrar" data-cerrar aria-label="Cerrar">✕</button>
+      </div>
+      <div class="guia-pasos">
+        <div class="guia-paso">
+          <span class="paso-pill">PASO 1</span>
+          <p><b>Elige una plantilla</b> en la columna de la izquierda (una escena de video, un comando de cámara o una imagen).</p>
+        </div>
+        <div class="guia-paso">
+          <span class="paso-pill paso-pill--2">PASO 2</span>
+          <p><b>Rellena el formulario del centro</b>: elige tu estilo visual, tu personaje, el lugar, el movimiento de cámara y escribe qué ocurre.</p>
+        </div>
+        <div class="guia-paso">
+          <span class="paso-pill paso-pill--3">PASO 3</span>
+          <p>Pulsa el botón verde <b>📋 ¡COPIAR MI PROMPT!</b>, abre <b>Google Flow</b>, pégalo y ¡mira cómo cobra vida!</p>
+        </div>
+      </div>
+      <div class="guia-tips">
+        <h3>💡 Trucos de Director de Cine</h3>
+        <ul>
+          <li>⏱️ Los videos de Flow duran unos <b>8 segundos</b>: pide una sola acción clara y frases cortas.</li>
+          <li>🎥 En <b>Laboratorio de Cámara</b> puedes ver dibujos animados que te muestran cómo se mueve cada cámara.</li>
+          <li>🎲 Si no sabes qué inventar, aprieta el botón <b>¡Sorpréndeme!</b> para mezclar ideas al azar.</li>
+          <li>📺 Mira el <b>Monitor de Resultados</b> a la derecha para ver los videos de ejemplo en YouTube.</li>
+        </ul>
+      </div>
+      <div class="modal__pie">
+        <button type="button" class="btn3d btn3d--verde" data-cerrar>¡A dirigir! 🎬</button>
+      </div>
+    </div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="biblioteca.js"></script>
+  <script src="js/produccion.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
