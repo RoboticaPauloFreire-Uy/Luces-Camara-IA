@@ -76,7 +76,9 @@ window.crearProduccion = function crearProduccion(api) {
 
   function nuevaProduccion() {
     return {
+      movieId: '',
       titulo: '',
+      youtubeUrl: '',
       estiloId: primero('estilo').id || '',
       personajes: [nuevoPersonaje(0)],
       escenario: nuevoEscenario(),
@@ -88,11 +90,21 @@ window.crearProduccion = function crearProduccion(api) {
     };
   }
 
-  let prod;
-  try { prod = JSON.parse(localStorage.getItem(LS_PROD)); } catch { prod = null; }
-  if (!prod || !Array.isArray(prod.personajes) || !Array.isArray(prod.escenas)) prod = nuevaProduccion();
+  const keyBorradorAlumno = () => {
+    const st = window.PFUsuarios?.getActiveStudent?.();
+    return st && st.id ? `${LS_PROD}:${st.id}` : LS_PROD;
+  };
 
-  const guardar = () => localStorage.setItem(LS_PROD, JSON.stringify(prod));
+  function cargarBorradorActual() {
+    let p = null;
+    try { p = JSON.parse(localStorage.getItem(keyBorradorAlumno())); } catch { p = null; }
+    if (!p || !Array.isArray(p.personajes) || !Array.isArray(p.escenas)) p = nuevaProduccion();
+    return p;
+  }
+
+  let prod = cargarBorradorActual();
+
+  const guardar = () => localStorage.setItem(keyBorradorAlumno(), JSON.stringify(prod));
 
   function getPath(obj, path) {
     return path.split('.').reduce((o, k) => (o == null ? o : o[k]), obj);
@@ -451,9 +463,17 @@ window.crearProduccion = function crearProduccion(api) {
             <p>Aquí está todo tu guion: personajes, escenario y escenas en orden. ¡Puedes copiar cada prompt o el guion completo!</p>
           </div>
           <div class="pelicula__acciones">
+            <button type="button" class="btn3d btn3d--amarillo" data-guardar-cuenta>💾 Guardar en mi cuenta</button>
             <button type="button" class="btn3d btn3d--verde" data-copiar="guion">📋 Copiar guion completo</button>
-            <button type="button" class="btn3d btn3d--rojo" data-reiniciar>🔄 Empezar otra película</button>
+            <button type="button" class="btn3d btn3d--rojo" data-reiniciar>➕ Nueva película</button>
           </div>
+        </div>
+        <div class="bloque-var" style="--vc:#22c55e">
+          <div class="bloque-var__cab">
+            <span class="bloque-var__num">📺</span>
+            <label class="bloque-var__pregunta">Link de tu video terminado (YouTube o Google Drive) <small class="nota">(opcional)</small></label>
+          </div>
+          <input class="input-grande" data-campo="youtubeUrl" value="${esc(prod.youtubeUrl || '')}" placeholder="Pega aquí el link de tu video cuando lo termines…">
         </div>
         <div class="cinta">
           ${prod.personajes.map((_, i) => tarjeta(`f-p${i}`, '🧑‍🚀', esc(nombreDe(i)), 'Personaje · Imagen', promptPersonaje(i), prod.hecho[`p${i}`])).join('')}
@@ -486,14 +506,26 @@ window.crearProduccion = function crearProduccion(api) {
     const pct = Math.round((listo / total) * 100);
     const e = prod.etapa;
 
+    const st = window.PFUsuarios?.getActiveStudent?.();
     root.innerHTML = `
       <div class="prod-cab">
         <div class="prod-cab__titulo">
           <span class="prod-cab__emoji">🎞️</span>
           <label>
-            <small>Título de tu película</small>
+            <small>${st ? `Película de <b>${esc(st.name)}</b> (${esc(st.gradeName || '')})` : 'Título de tu película'}</small>
             <input class="input-titulo" data-campo="titulo" value="${esc(prod.titulo)}" maxlength="60" placeholder="Escribe aquí el título de tu película…">
           </label>
+        </div>
+        <div class="prod-cab__acciones-cuenta">
+          <button type="button" class="btn3d btn3d--sm btn3d--verde" data-guardar-cuenta>
+            💾 ${st ? 'Guardar mi película' : 'Guardar (Iniciar sesión)'}
+          </button>
+          <button type="button" class="btn3d btn3d--sm btn3d--amarillo" data-mis-peliculas>
+            🎞️ Mis películas
+          </button>
+          <button type="button" class="btn3d btn3d--sm btn3d--blanco" data-reiniciar title="Crear una película nueva en blanco">
+            ➕ Nueva
+          </button>
         </div>
         <div class="progreso">
           <div class="progreso__texto">⭐ Progreso: <b>${listo} de ${total}</b> pasos hechos en Flow</div>
@@ -663,12 +695,58 @@ window.crearProduccion = function crearProduccion(api) {
         guardar(); render();
         return;
       }
+      if (t('[data-guardar-cuenta]')) {
+        await guardarEnCuenta();
+        return;
+      }
+      if (t('[data-mis-peliculas]')) {
+        window.PFUsuarios?.abrirModalUsuario?.();
+        return;
+      }
       if (t('[data-reiniciar]')) {
-        if (!confirm('¿Empezar una película nueva? Se borrará la película actual de este navegador.')) return;
+        if (!confirm('¿Empezar una película nueva en blanco? (Recuerda guardar la actual en tu cuenta si quieres conservarla).')) return;
         prod = nuevaProduccion();
         guardar(); render();
         toast('🎬 ¡Nueva película! Empieza creando tus personajes');
       }
+    });
+
+    async function guardarEnCuenta() {
+      const st = window.PFUsuarios?.getActiveStudent?.();
+      if (!st) {
+        toast('🔐 Primero inicia sesión con tu usuario y PIN');
+        window.PFUsuarios?.abrirModalUsuario?.();
+        return;
+      }
+      if (!prod.titulo || !prod.titulo.trim()) {
+        const nombrePeli = prompt('🎬 Ponle un título a tu película antes de guardarla:', 'Mi gran película');
+        if (nombrePeli === null) return;
+        prod.titulo = nombrePeli.trim() || 'Mi gran película';
+      }
+      const res = await window.PFUsuarios.guardarPeliculaAlumno(st, prod);
+      prod.movieId = res.registro.movieId;
+      guardar();
+      render();
+      toast(res.enNube ? `☁️ ¡Película "${prod.titulo}" guardada en la cuenta de ${st.name}!` : `💾 Película "${prod.titulo}" guardada en este equipo`);
+    }
+
+    window.addEventListener('pf_student_changed', () => {
+      prod = cargarBorradorActual();
+      render();
+    });
+
+    window.addEventListener('pf_load_movie', (ev) => {
+      if (!ev.detail) return;
+      prod = { ...nuevaProduccion(), ...ev.detail };
+      guardar();
+      render();
+      toast(`📂 Película "${prod.titulo}" cargada`);
+    });
+
+    window.addEventListener('pf_request_save_current_movie', async () => {
+      await guardarEnCuenta();
+      const st = window.PFUsuarios?.getActiveStudent?.();
+      if (st) window.PFUsuarios?.abrirModalUsuario?.();
     });
   }
 

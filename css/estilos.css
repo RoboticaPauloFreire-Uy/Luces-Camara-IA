@@ -1808,6 +1808,258 @@ mark.var-vacia {
   flex: 1;
 }
 
+.prod-cab__acciones-cuenta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ---------- Usuarios / Login Caja Fuerte / Mis Películas ---------- */
+.btn3d--usuario-activo {
+  background: #dcfce7;
+  color: #14532d;
+  padding: 6px 14px;
+  text-align: left;
+}
+
+.usr-avatar {
+  font-size: 1.5rem;
+}
+
+.usr-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.usr-info small {
+  font-size: 0.74rem;
+  font-weight: 800;
+  opacity: 0.85;
+}
+
+.login-pf {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+  align-items: stretch;
+}
+
+.login-pf__col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-pf__intro {
+  font-weight: 700;
+  color: var(--suave);
+}
+
+.login-pf__label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.05rem;
+}
+
+.login-pf__pista {
+  background: #fef9c3;
+  border: 2.5px solid var(--borde);
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.login-pf__error {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 2.5px solid #ef4444;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 800;
+}
+
+.login-pf__vault {
+  background: #0f172a;
+  color: #fff;
+  border: 3px solid var(--borde);
+  border-radius: 18px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.vault-cab {
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.86rem;
+  color: #fde047;
+  text-align: center;
+  letter-spacing: 0.7px;
+}
+
+.vault-pantalla {
+  background: #020617;
+  border: 3px solid #334155;
+  border-radius: 14px;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.vault-slot {
+  width: 44px;
+  height: 50px;
+  border-radius: 10px;
+  border: 2px solid #475569;
+  background: #0f172a;
+  color: #64748b;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vault-slot.lleno {
+  border-color: #22c55e;
+  color: #4ade80;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.35);
+}
+
+.vault-teclado {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.vault-tecla {
+  padding: 11px 0;
+  border-radius: 12px;
+  border: 2.5px solid #334155;
+  background: #1e293b;
+  color: #fff;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  box-shadow: 0 3px 0 #020617;
+  cursor: pointer;
+}
+
+.vault-tecla:hover {
+  background: #334155;
+}
+
+.vault-tecla:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #020617;
+}
+
+.vault-tecla--limpiar {
+  background: #b91c1c;
+  border-color: #ef4444;
+}
+
+.vault-tecla--borrar {
+  background: #ca8a04;
+  border-color: #facc15;
+}
+
+.usr-perfil {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.usr-perfil__ficha {
+  background: #f0fdf4;
+  border: 3px solid var(--borde);
+  border-radius: 16px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.usr-perfil__avatar {
+  font-size: 2.4rem;
+  width: 58px;
+  height: 58px;
+  border-radius: 16px;
+  background: #fff;
+  border: 2.5px solid var(--borde);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.usr-perfil__ficha > div {
+  flex: 1;
+}
+
+.usr-peliculas-cab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.usr-peliculas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-mi-peli {
+  background: #f8fafc;
+  border: 3px solid var(--borde);
+  border-radius: 16px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 0 var(--borde);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  text-align: left;
+}
+
+.card-mi-peli__info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.card-mi-peli__info small {
+  color: var(--suave);
+  font-weight: 800;
+}
+
+.card-mi-peli__acciones {
+  display: flex;
+  gap: 8px;
+}
+
+.usr-vacio {
+  background: #f8fafc;
+  border: 2.5px dashed #94a3b8;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  font-weight: 700;
+}
+
 /* Toast */
 .toast {
   position: fixed;
@@ -1854,7 +2106,7 @@ mark.var-vacia {
     grid-template-columns: 1fr;
     padding: 10px 14px 30px;
   }
-  .fila-2 {
+  .fila-2, .login-pf {
     grid-template-columns: 1fr;
   }
 }

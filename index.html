@@ -43,6 +43,9 @@
     </div>
 
     <div class="cabecera__der">
+      <button id="btn-usuario" class="btn3d btn3d--blanco" title="Inicia sesión con tu usuario del Taller de Robótica para guardar tus películas">
+        🔐 Ingreso Alumnos
+      </button>
       <button id="btn-azar-global" class="btn3d btn3d--amarillo" title="Elige una plantilla y rellénala al azar">
         🎲 ¡Sorpréndeme!
       </button>
@@ -334,8 +337,22 @@
     </div>
   </dialog>
 
+  <!-- ==================== MODAL USUARIO / MIS PELÍCULAS ==================== -->
+  <dialog id="dlg-usuario" class="dialogo dialogo--grande">
+    <div class="modal">
+      <div class="modal__cab">
+        <h2>🎬 Credencial de Director/a · Colegio Paulo Freire</h2>
+        <button type="button" class="btn-cerrar" data-cerrar aria-label="Cerrar">✕</button>
+      </div>
+      <div id="usuario-modal-cuerpo"></div>
+    </div>
+  </dialog>
+
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/usuarios.js"></script>
   <script src="biblioteca.js"></script>
   <script src="js/produccion.js"></script>
   <script src="js/app.js"></script>
