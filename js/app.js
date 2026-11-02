@@ -119,8 +119,21 @@
   }
 
   // ---------- Diagramas animados SVG para comandos de cámara ----------
-  function svgCamara(anim) {
+  function primerYtIdDe(item) {
+    if (!item || !Array.isArray(item.videos)) return null;
+    for (const v of item.videos) {
+      const id = ytId(v.url || v);
+      if (id) return id;
+    }
+    return null;
+  }
+
+  function svgCamara(anim, item = null) {
     if (!anim) return '';
+    if (!item) {
+      item = state.data.items.find((i) => i.categoria === 'camara' && i.anim === anim) || null;
+    }
+    const vidId = primerYtIdDe(item);
     const base = {
       'dolly-in': {
         badge: 'DOLLY IN · LA CÁMARA SE ACERCA',
@@ -303,9 +316,15 @@
     }[anim];
 
     if (!base) return '';
-    return `<div class="diagrama-camara">
-      <div class="diagrama-camara__badge">🎥 ${esc(base.badge)}</div>
-      ${base.svg}
+    return `<div class="diagrama-camara ${vidId ? 'diagrama-camara--con-video' : ''}" ${vidId ? `data-hover-yt="${esc(vidId)}"` : ''}>
+      <div class="diagrama-camara__top">
+        <div class="diagrama-camara__badge">🎥 ${esc(base.badge)}</div>
+        ${vidId ? `<span class="diagrama-camara__hint">🖱️ Pasa el mouse para ver el video de ejemplo</span>` : ''}
+      </div>
+      <div class="diagrama-camara__visor">
+        ${base.svg}
+        ${vidId ? `<div class="diagrama-camara__yt-slot"></div>` : ''}
+      </div>
     </div>`;
   }
 
@@ -442,7 +461,15 @@
 
   function renderVideos(item) {
     const cont = $('#contenedor-videos');
-    if (!item.videos || !item.videos.length) {
+    let listaVideos = item.videos && item.videos.length ? [...item.videos] : [];
+    // Si la plantilla no tiene video propio pero el alumno eligió una cámara con video, mostrar también ese ejemplo
+    if (!listaVideos.length && state.vals.camara?.itemId) {
+      const camItem = itemById(state.vals.camara.itemId);
+      if (camItem && camItem.videos && camItem.videos.length) {
+        listaVideos = camItem.videos;
+      }
+    }
+    if (!listaVideos.length) {
       cont.innerHTML = `
         <div class="tv-vacio">
           <div class="tv-vacio__icono">📼</div>
@@ -452,7 +479,7 @@
       return;
     }
 
-    cont.innerHTML = item.videos.map((v) => {
+    cont.innerHTML = listaVideos.map((v) => {
       const id = ytId(v.url);
       const tit = v.titulo ? `<div class="yt-card__titulo">🎬 ${esc(v.titulo)}</div>` : '';
       if (!id) {
@@ -460,10 +487,11 @@
       }
       return `
         <div class="yt-card">
-          <button type="button" class="yt-thumb" data-yt="${esc(id)}" aria-label="Reproducir ejemplo de YouTube">
+          <div class="yt-thumb" data-hover-yt="${esc(id)}" data-yt="${esc(id)}" role="button" tabindex="0" aria-label="Reproducir ejemplo de YouTube">
             <img src="https://i.ytimg.com/vi/${esc(id)}/hqdefault.jpg" alt="" loading="lazy">
-            <span class="yt-play">▶ Reproducir ejemplo</span>
-          </button>
+            <span class="yt-play">🖱️ Pasa el mouse o haz clic para ver ▶</span>
+            <div class="diagrama-camara__yt-slot"></div>
+          </div>
           ${tit}
           <a class="yt-ext" href="https://www.youtube.com/watch?v=${esc(id)}" target="_blank" rel="noopener">Ver en YouTube ↗</a>
         </div>`;
@@ -696,6 +724,7 @@
     const res = construirPromptFinal(item.prompt, state.vals);
     state.promptListo = res.plano;
     $('#vista-previa').innerHTML = res.html;
+    renderVideos(item);
 
     const est = $('#estado-prompt');
     if (res.faltan.length) {
@@ -1120,18 +1149,36 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
     toast('📋 ¡Prompt copiado al portapapeles!');
   });
 
+  // Reproducción automática de YouTube al acercar el mouse (hover) sobre diagramas y miniaturas
+  document.addEventListener('pointerover', (e) => {
+    const box = e.target.closest('[data-hover-yt]');
+    if (!box || box.contains(e.relatedTarget)) return;
+    const slot = box.querySelector('.diagrama-camara__yt-slot');
+    if (!slot || slot.querySelector('iframe')) return;
+    const id = box.dataset.hoverYt;
+    box.classList.add('reproduciendo-yt');
+    slot.innerHTML = `<iframe class="yt-hover-iframe" src="https://www.youtube-nocookie.com/embed/${esc(id)}?autoplay=1&mute=1&loop=1&playlist=${esc(id)}&controls=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="Ejemplo de cámara en YouTube"></iframe>`;
+  });
+
+  document.addEventListener('pointerout', (e) => {
+    const box = e.target.closest('[data-hover-yt]');
+    if (!box || box.contains(e.relatedTarget) || box.dataset.fijado === '1') return;
+    const slot = box.querySelector('.diagrama-camara__yt-slot');
+    box.classList.remove('reproduciendo-yt');
+    if (slot) slot.innerHTML = '';
+  });
+
   // Ficha plantilla y catálogo (favoritos, editar, duplicar, eliminar, copiar pieza)
   document.addEventListener('click', async (e) => {
     const yt = e.target.closest('[data-yt]');
     if (yt) {
       const id = yt.dataset.yt;
-      const iframe = document.createElement('iframe');
-      iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
-      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-      iframe.allowFullscreen = true;
-      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-      iframe.className = 'yt-iframe';
-      yt.replaceWith(iframe);
+      yt.dataset.fijado = '1';
+      yt.classList.add('reproduciendo-yt');
+      const slot = yt.querySelector('.diagrama-camara__yt-slot');
+      if (slot) {
+        slot.innerHTML = `<iframe class="yt-hover-iframe" src="https://www.youtube-nocookie.com/embed/${esc(id)}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="Video de YouTube"></iframe>`;
+      }
       return;
     }
 
