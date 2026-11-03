@@ -388,7 +388,7 @@
     return `<div class="diagrama-camara ${vidId ? 'diagrama-camara--con-video' : ''}" ${vidId ? `data-modal-yt="${esc(vidId)}" ${itemIdAttr}` : ''}>
       <div class="diagrama-camara__top">
         <div class="diagrama-camara__badge">🎥 ${esc(base.badge)}</div>
-        ${vidId ? `<button type="button" class="diagrama-camara__hint" data-modal-yt="${esc(vidId)}" ${itemIdAttr}>📺 Pasa el mouse o clic para ver video ▶</button>` : ''}
+        ${vidId ? `<button type="button" class="diagrama-camara__hint" data-modal-yt="${esc(vidId)}" ${itemIdAttr}>📺 Haz clic para ver video ▶</button>` : ''}
       </div>
       <div class="diagrama-camara__visor">
         ${base.svg}
@@ -403,7 +403,7 @@
       <div class="thumb-estilo" data-ver-img="${esc(item.id)}" role="button" tabindex="0" aria-label="Ver imagen de ejemplo de ${esc(item.titulo)}">
         <div class="thumb-estilo__img-wrap">
           <img src="${esc(item.imagen)}" alt="${esc(item.titulo)}" loading="lazy">
-          <span class="thumb-estilo__badge">🔍 Pasa el mouse o haz clic para ampliar</span>
+          <span class="thumb-estilo__badge">🔍 Haz clic para ampliar</span>
         </div>
         <div class="thumb-estilo__pie">
           <span>${esc(item.icono || cat?.emoji || '🎨')} <b>${esc(item.titulo)}</b></span>
@@ -643,7 +643,7 @@
         <div class="yt-card">
           <div class="yt-thumb" data-modal-yt="${esc(id)}" data-yt-titulo="${esc(v.titulo || item.titulo || '')}" data-yt-desc="${esc(item.descripcion || '')}" role="button" tabindex="0" aria-label="Reproducir ejemplo de YouTube en ventana">
             <img src="https://i.ytimg.com/vi/${esc(id)}/hqdefault.jpg" alt="" loading="lazy">
-            <span class="yt-play">🖱️ Pasa el mouse o haz clic para ver en grande ▶</span>
+            <span class="yt-play">🎬 Haz clic para ver en grande ▶</span>
           </div>
           ${tit}
           <div class="yt-card__pie">
@@ -912,7 +912,7 @@
     selectorContexto = { key, catId };
 
     $('#selector-titulo').textContent = `${cat?.emoji || '🧩'} Elige ${cat?.nombre || 'una opción'}`;
-    $('#selector-sub').textContent = 'Pasa el mouse sobre una imagen o video para verlo en grande, o haz clic en la tarjeta para elegirla:';
+    $('#selector-sub').textContent = 'Haz clic en la imagen o video para verlo en grande, o haz clic en la tarjeta para elegirla:';
 
     const actualId = state.vals[key]?.itemId;
     $('#selector-grilla').innerHTML = items.map((it) => `
@@ -1328,7 +1328,7 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
     toast('📋 ¡Prompt copiado al portapapeles!');
   });
 
-  // Abrir modal de Imagen o Video de YouTube al aproximar el mouse (hover) o hacer clic
+  // Abrir modal de Imagen o Video de YouTube al hacer clic
   function dispararModalDesdeElemento(el) {
     if (!el) return;
     if (el.dataset.verImg) {
@@ -1351,37 +1351,10 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
     }
   }
 
-  let hoverMediaTimer = null;
-  let hoverMediaTarget = null;
-
-  document.addEventListener('pointerover', (e) => {
-    const dlgVisor = $('#dlg-visor-media');
-    if (dlgVisor && dlgVisor.open) return;
-    const trigger = e.target.closest('[data-ver-img], [data-modal-yt]');
-    if (!trigger || trigger.contains(e.relatedTarget)) return;
-    clearTimeout(hoverMediaTimer);
-    hoverMediaTarget = trigger;
-    hoverMediaTimer = setTimeout(() => {
-      if (hoverMediaTarget === trigger) {
-        dispararModalDesdeElemento(trigger);
-      }
-    }, 220);
-  });
-
-  document.addEventListener('pointerout', (e) => {
-    const trigger = e.target.closest('[data-ver-img], [data-modal-yt]');
-    if (!trigger || trigger.contains(e.relatedTarget)) return;
-    if (hoverMediaTarget === trigger) {
-      clearTimeout(hoverMediaTimer);
-      hoverMediaTarget = null;
-    }
-  });
-
-  // Ficha plantilla y catálogo (favoritos, editar, duplicar, eliminar, copiar pieza, abrir modal media)
+  // Ficha plantilla y catálogo (favoritos, editar, duplicar, eliminar, copiar pieza, abrir modal media con clic)
   document.addEventListener('click', async (e) => {
     const mediaTrigger = e.target.closest('[data-ver-img], [data-modal-yt]');
     if (mediaTrigger) {
-      clearTimeout(hoverMediaTimer);
       dispararModalDesdeElemento(mediaTrigger);
       return;
     }
