@@ -673,7 +673,12 @@ window.BIBLIOTECA = {
         "épico",
         "ciencias"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/9uToGOsG3OE",
+          "titulo": "Zoom de satélite desde el espacio (Satellite Zoom)"
+        }
+      ]
     },
     {
       "id": "cam-flythrough",
