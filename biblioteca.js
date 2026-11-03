@@ -602,6 +602,24 @@ window.BIBLIOTECA = {
       ]
     },
     {
+      "id": "cam-satelite",
+      "categoria": "camara",
+      "icono": "🛰️",
+      "anim": "satelite",
+      "comando": "Satellite Zoom Shot (Zoom de satélite)",
+      "titulo": "Zoom de satélite desde el espacio (Satellite Zoom)",
+      "descripcion": "Empieza en el espacio viendo el planeta Tierra y baja a toda velocidad atravesando las nubes hasta llegar directo a tu personaje.",
+      "fragmento": "zoom de satélite extremo (satellite zoom shot) que desciende rápidamente desde una vista espacial de la Tierra hasta enfocar la escena",
+      "prompt": "Video espectacular en estilo {estilo}. Comando de cámara: zoom de satélite extremo (satellite zoom shot) que comienza desde una vista espacial del planeta Tierra, desciende rápidamente atravesando las nubes y enfoca en {escenario} hasta llegar directo a {personaje}, quien {accion:mira hacia el cielo y saluda con entusiasmo}. Transición continua sin cortes y gran sensación de escala. Audio: {audio}.",
+      "etiquetas": [
+        "movimiento",
+        "efectos",
+        "épico",
+        "ciencias"
+      ],
+      "videos": []
+    },
+    {
       "id": "img-portada",
       "categoria": "imagen",
       "icono": "📕",

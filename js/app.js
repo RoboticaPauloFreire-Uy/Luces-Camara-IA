@@ -312,6 +312,17 @@
           <path d="M35,70 A75,55 0 0,1 185,70" fill="none" stroke="#fbbf24" stroke-width="3" stroke-dasharray="5 4"/>
           <g class="anim-truck"><text x="70" y="34" font-size="22">☀️</text><text x="135" y="34" font-size="22">🌙</text></g>
         </svg>`
+      },
+      'satelite': {
+        badge: 'ZOOM DE SATÉLITE · DEL ESPACIO A LA ESCENA',
+        svg: `<svg viewBox="0 0 220 90" class="cam-svg">
+          <text x="34" y="28" font-size="20">🛰️</text>
+          <text x="68" y="34" font-size="22">🌍</text>
+          <line x1="82" y1="36" x2="155" y2="66" stroke="#38bdf8" stroke-width="3" stroke-dasharray="5 4"/>
+          <text x="120" y="42" font-size="16">☁️</text>
+          <g class="anim-dolly-in"><circle cx="95" cy="42" r="10" fill="rgba(56,189,248,0.35)" stroke="#38bdf8" stroke-width="2"/></g>
+          <circle cx="176" cy="68" r="15" fill="#fbbf24"/><text x="176" y="74" text-anchor="middle" font-size="17">🧑</text>
+        </svg>`
       }
     }[anim];
 
