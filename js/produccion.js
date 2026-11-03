@@ -12,7 +12,7 @@
 window.crearProduccion = function crearProduccion(api) {
   'use strict';
 
-  const { $, esc, itemsDeCat, itemById, textoPieza, svgCamara, copiar, toast } = api;
+  const { $, esc, itemsDeCat, itemById, textoPieza, svgCamara, miniaturaImagenHTML, copiar, toast } = api;
   const LS_PROD = 'lci:produccion';
   const MAX_PERSONAJES = 2; // Flow admite hasta 3 ingredientes: 2 personajes + 1 escenario
   const MAX_ESCENAS = 8;
@@ -291,9 +291,11 @@ window.crearProduccion = function crearProduccion(api) {
     const i = Math.min(prod.personajeActivo, prod.personajes.length - 1);
     const p = prod.personajes[i];
     const base = `personajes.${i}`;
+    const estItem = itemById(prod.estiloId);
     return `
       ${bloque('🎨', '#8ac926', '🎨 Estilo de TODA tu película <small class="nota">(se usa en todas las etapas para que todo combine)</small>',
-        selectPiezas('estilo', 'estiloId', prod.estiloId, false))}
+        `${selectPiezas('estilo', 'estiloId', prod.estiloId, false)}
+         ${estItem ? `<p class="pista-texto">💡 ${esc(estItem.descripcion)}</p>${miniaturaImagenHTML ? miniaturaImagenHTML(estItem) : ''}` : ''}`)}
 
       <div class="subtabs-prod">
         ${prod.personajes.map((_, k) => `<button type="button" class="btn3d btn3d--sm ${k === i ? 'btn3d--activo' : 'btn3d--blanco'}" style="--c:#6a4c93" data-personaje-activo="${k}">🧑‍🚀 ${esc(nombreDe(k))} ${prod.hecho[`p${k}`] ? '✅' : ''}</button>`).join('')}
@@ -392,7 +394,7 @@ window.crearProduccion = function crearProduccion(api) {
 
       ${bloque(4, '#1982c4', '🎥 ¿Cómo se mueve la cámara?', `
         ${selectPiezas('camara', `${base}.camaraId`, s.camaraId, false)}
-        ${cam ? `<p class="pista-texto">💡 ${esc(cam.descripcion)}</p>${svgCamara(cam.anim)}` : ''}`)}
+        ${cam ? `<p class="pista-texto">💡 ${esc(cam.descripcion)}</p>${svgCamara(cam.anim, cam)}` : ''}`)}
 
       ${bloque(5, '#f72585', '💬 ¿Alguien dice algo? <small class="nota">(opcional, frase corta)</small>',
         `<input class="input-grande" data-campo="${base}.dialogo" value="${esc(s.dialogo)}" maxlength="120" placeholder="Ej: ¡Por fin encontré el tesoro!">`)}
@@ -494,8 +496,13 @@ window.crearProduccion = function crearProduccion(api) {
 
   function chipEstilo() {
     const it = itemById(prod.estiloId);
-    return `<div class="chip-estilo">🎨 Estilo de tu película: <b>${esc(it ? it.titulo : 'sin elegir')}</b>
-      <button type="button" class="chip-filtro" data-etapa="0">Cambiar</button></div>`;
+    return `<div class="chip-estilo">
+      <span>🎨 Estilo de tu película: <b>${esc(it ? it.titulo : 'sin elegir')}</b></span>
+      <div class="chip-estilo__acciones">
+        ${it && it.imagen ? `<button type="button" class="chip-filtro" data-ver-img="${esc(it.id)}">🖼️ Ver imagen</button>` : ''}
+        <button type="button" class="chip-filtro" data-etapa="0">Cambiar</button>
+      </div>
+    </div>`;
   }
 
   // ---------- Render ----------

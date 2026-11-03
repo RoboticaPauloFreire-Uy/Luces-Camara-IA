@@ -295,6 +295,10 @@
           </label>
         </div>
 
+        <label>🖼️ Imagen de ejemplo <small>(ruta en <code>images/...</code> o link de imagen)</small>
+          <input name="imagen" placeholder="Ej: images/Animacion_3D_494c8dcd.jpg">
+        </label>
+
         <label>📺 Links de resultados en YouTube <small>(uno por línea; opcional: <code>https://youtu.be/... | Título del ejemplo</code>)</small>
           <textarea name="videos" rows="3" placeholder="https://www.youtube.com/watch?v=xxxxxxxxxxx | Ejemplo hecho en clases"></textarea>
         </label>
@@ -351,6 +355,25 @@
         <button type="button" class="btn-cerrar" data-cerrar aria-label="Cerrar">✕</button>
       </div>
       <div id="usuario-modal-cuerpo"></div>
+    </div>
+  </dialog>
+
+  <!-- ==================== MODAL VISOR DE IMAGEN Y VIDEO YOUTUBE ==================== -->
+  <dialog id="dlg-visor-media" class="dialogo dialogo--visor">
+    <div class="modal modal--visor">
+      <div class="modal__cab">
+        <div>
+          <span id="visor-badge" class="badge-mini">🎬 VISTA DE EJEMPLO</span>
+          <h2 id="visor-titulo">Ejemplo</h2>
+        </div>
+        <button type="button" class="btn-cerrar" data-cerrar aria-label="Cerrar">✕</button>
+      </div>
+      <p id="visor-desc" class="modal__sub"></p>
+      <div id="visor-cuerpo" class="visor-cuerpo"></div>
+      <div class="modal__pie">
+        <a id="visor-link-yt" class="btn3d btn3d--sm btn3d--rojo" href="#" target="_blank" rel="noopener" hidden>▶️ Abrir en YouTube ↗</a>
+        <button type="button" class="btn3d btn3d--sm btn3d--verde" data-cerrar>Cerrar</button>
+      </div>
     </div>
   </dialog>
 

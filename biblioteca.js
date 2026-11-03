@@ -866,7 +866,8 @@ window.BIBLIOTECA = {
         "animación",
         "básico"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Animacion_3D_494c8dcd.jpg"
     },
     {
       "id": "est-plastilina",
@@ -880,7 +881,8 @@ window.BIBLIOTECA = {
         "animación",
         "arte"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/A_hyper-realistic_cinematic_group_selfie_4c3358b4_2K.jpg_c622e5bd.jpg"
     },
     {
       "id": "est-anime",
@@ -922,7 +924,8 @@ window.BIBLIOTECA = {
         "arte",
         "manualidades"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Mundo_de_papel_recortado_2d533e56.jpg"
     },
     {
       "id": "est-lego",
@@ -936,7 +939,8 @@ window.BIBLIOTECA = {
         "animación",
         "juguetes"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Bloques_de_construcción_73261a11.jpg"
     },
     {
       "id": "est-pixel",
@@ -949,7 +953,8 @@ window.BIBLIOTECA = {
       "etiquetas": [
         "videojuegos"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Videojuego_Retro_b2207cdd.jpg"
     },
     {
       "id": "est-realista",
@@ -976,7 +981,8 @@ window.BIBLIOTECA = {
       "etiquetas": [
         "arte"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Cuento_en_acuarela_6b7f159e.jpg"
     },
     {
       "id": "est-miniworld",
@@ -990,7 +996,8 @@ window.BIBLIOTECA = {
         "efectos",
         "lentes"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Mundo_en_Miniatura_675b6366.jpg"
     },
     {
       "id": "est-golden-hour",
@@ -1004,7 +1011,8 @@ window.BIBLIOTECA = {
         "luz",
         "cine"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Hora_Dorada_del_Atardecer_(Golden_ec8b4d8d.jpg"
     },
     {
       "id": "est-neon-city",
@@ -1018,7 +1026,8 @@ window.BIBLIOTECA = {
         "luz",
         "ciencia ficción"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Noche_Cyberpunk_de_Neón_(NeonCity)_4fc8f63f.jpg"
     },
     {
       "id": "est-rainy-night",
@@ -1032,7 +1041,8 @@ window.BIBLIOTECA = {
         "clima",
         "luz"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Noche_de_Lluvia_con_Reflejos_6fee4e77.jpg"
     },
     {
       "id": "est-snow-world",
@@ -1046,7 +1056,8 @@ window.BIBLIOTECA = {
         "clima",
         "naturaleza"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Mundo_Nevado_Invernal_(SnowWorld)_84dcfc70.jpg"
     },
     {
       "id": "est-fog",
@@ -1060,7 +1071,8 @@ window.BIBLIOTECA = {
         "clima",
         "misterio"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Niebla_Misteriosa_con_Rayos_de_3ca1f612.jpg"
     },
     {
       "id": "est-autumn",
@@ -1074,7 +1086,8 @@ window.BIBLIOTECA = {
         "clima",
         "naturaleza"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Colores_y_Hojas_de_Otoño_2bcd2bf6.jpg"
     },
     {
       "id": "est-vintage-film",
@@ -1088,7 +1101,8 @@ window.BIBLIOTECA = {
         "cine",
         "historia"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Película_Analógica_Retro_(VintageFilm)_d6acfa3b.jpg"
     },
     {
       "id": "est-studio-pro",

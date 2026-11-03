@@ -102,11 +102,15 @@
   function normalizarDatos(d) {
     d.categorias = Array.isArray(d.categorias) ? d.categorias : [];
     d.items = Array.isArray(d.items) ? d.items : [];
+    const origMap = new Map((original.items || []).map((x) => [x.id, x]));
     d.items.forEach((it) => {
       it.id = it.id || nuevoId();
+      const origIt = origMap.get(it.id);
       it.icono = it.icono || (catById(it.categoria, d)?.emoji || '🎬');
+      it.imagen = it.imagen || (origIt?.imagen || '');
       it.etiquetas = Array.isArray(it.etiquetas) ? it.etiquetas : [];
-      it.videos = (Array.isArray(it.videos) ? it.videos : [])
+      const vids = (Array.isArray(it.videos) && it.videos.length) ? it.videos : (origIt?.videos || []);
+      it.videos = (Array.isArray(vids) ? vids : [])
         .map((v) => (typeof v === 'string' ? { url: v, titulo: '' } : v))
         .filter((v) => v && v.url);
     });
@@ -380,16 +384,102 @@
     }[anim];
 
     if (!base) return '';
-    return `<div class="diagrama-camara ${vidId ? 'diagrama-camara--con-video' : ''}" ${vidId ? `data-hover-yt="${esc(vidId)}"` : ''}>
+    const itemIdAttr = item?.id ? `data-item-id="${esc(item.id)}"` : '';
+    return `<div class="diagrama-camara ${vidId ? 'diagrama-camara--con-video' : ''}" ${vidId ? `data-modal-yt="${esc(vidId)}" ${itemIdAttr}` : ''}>
       <div class="diagrama-camara__top">
         <div class="diagrama-camara__badge">🎥 ${esc(base.badge)}</div>
-        ${vidId ? `<span class="diagrama-camara__hint">🖱️ Pasa el mouse para ver el video de ejemplo</span>` : ''}
+        ${vidId ? `<button type="button" class="diagrama-camara__hint" data-modal-yt="${esc(vidId)}" ${itemIdAttr}>📺 Pasa el mouse o clic para ver video ▶</button>` : ''}
       </div>
       <div class="diagrama-camara__visor">
         ${base.svg}
-        ${vidId ? `<div class="diagrama-camara__yt-slot"></div>` : ''}
       </div>
     </div>`;
+  }
+
+  function miniaturaImagenHTML(item) {
+    if (!item || !item.imagen) return '';
+    const cat = catById(item.categoria);
+    return `
+      <div class="thumb-estilo" data-ver-img="${esc(item.id)}" role="button" tabindex="0" aria-label="Ver imagen de ejemplo de ${esc(item.titulo)}">
+        <div class="thumb-estilo__img-wrap">
+          <img src="${esc(item.imagen)}" alt="${esc(item.titulo)}" loading="lazy">
+          <span class="thumb-estilo__badge">🔍 Pasa el mouse o haz clic para ampliar</span>
+        </div>
+        <div class="thumb-estilo__pie">
+          <span>${esc(item.icono || cat?.emoji || '🎨')} <b>${esc(item.titulo)}</b></span>
+          ${item.comando ? `<code class="thumb-estilo__cmd">${esc(item.comando)}</code>` : ''}
+        </div>
+      </div>`;
+  }
+
+  let visorActualKey = null;
+  function abrirVisorMedia({ tipo, url, ytId: videoId, titulo, descripcion, badge, itemId }) {
+    const dlg = $('#dlg-visor-media');
+    if (!dlg) return;
+    const key = `${tipo}:${videoId || url || itemId || ''}`;
+    if (dlg.open && visorActualKey === key) return;
+    visorActualKey = key;
+
+    $('#visor-badge').textContent = badge || (tipo === 'youtube' ? '📺 Video de ejemplo' : '🎨 Imagen de ejemplo');
+    $('#visor-titulo').textContent = titulo || 'Vista previa';
+    const descEl = $('#visor-desc');
+    if (descripcion) {
+      descEl.textContent = descripcion;
+      descEl.hidden = false;
+    } else {
+      descEl.textContent = '';
+      descEl.hidden = true;
+    }
+
+    const cuerpo = $('#visor-cuerpo');
+    const linkYt = $('#visor-link-yt');
+
+    if (tipo === 'youtube' && videoId) {
+      cuerpo.innerHTML = `
+        <div class="visor-video-wrap">
+          <iframe class="visor-iframe" src="https://www.youtube-nocookie.com/embed/${esc(videoId)}?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="${esc(titulo || 'Video de YouTube')}"></iframe>
+        </div>`;
+      if (linkYt) {
+        linkYt.href = `https://www.youtube.com/watch?v=${encodeURIComponent(videoId)}`;
+        linkYt.hidden = false;
+      }
+    } else if (tipo === 'imagen' && url) {
+      cuerpo.innerHTML = `
+        <div class="visor-img-wrap">
+          <img class="visor-img" src="${esc(url)}" alt="${esc(titulo || 'Imagen de ejemplo')}">
+        </div>`;
+      if (linkYt) linkYt.hidden = true;
+    }
+
+    if (!dlg.open) {
+      dlg.showModal();
+    }
+  }
+
+  function abrirVisorPorItem(item, forzarTipo = null) {
+    if (!item) return;
+    const cat = catById(item.categoria);
+    const badge = `${cat?.emoji || '🎬'} ${item.comando || cat?.nombre || 'Ejemplo'}`;
+    const vid = primerYtIdDe(item);
+    if ((forzarTipo === 'imagen' || (!forzarTipo && item.imagen)) && item.imagen) {
+      abrirVisorMedia({
+        tipo: 'imagen',
+        url: item.imagen,
+        titulo: item.titulo,
+        descripcion: item.descripcion,
+        badge,
+        itemId: item.id
+      });
+    } else if (vid) {
+      abrirVisorMedia({
+        tipo: 'youtube',
+        ytId: vid,
+        titulo: item.titulo,
+        descripcion: item.descripcion,
+        badge,
+        itemId: item.id
+      });
+    }
   }
 
   // ---------- Parseo de variables del prompt ----------
@@ -551,13 +641,15 @@
       }
       return `
         <div class="yt-card">
-          <div class="yt-thumb" data-hover-yt="${esc(id)}" data-yt="${esc(id)}" role="button" tabindex="0" aria-label="Reproducir ejemplo de YouTube">
+          <div class="yt-thumb" data-modal-yt="${esc(id)}" data-yt-titulo="${esc(v.titulo || item.titulo || '')}" data-yt-desc="${esc(item.descripcion || '')}" role="button" tabindex="0" aria-label="Reproducir ejemplo de YouTube en ventana">
             <img src="https://i.ytimg.com/vi/${esc(id)}/hqdefault.jpg" alt="" loading="lazy">
-            <span class="yt-play">🖱️ Pasa el mouse o haz clic para ver ▶</span>
-            <div class="diagrama-camara__yt-slot"></div>
+            <span class="yt-play">🖱️ Pasa el mouse o haz clic para ver en grande ▶</span>
           </div>
           ${tit}
-          <a class="yt-ext" href="https://www.youtube.com/watch?v=${esc(id)}" target="_blank" rel="noopener">Ver en YouTube ↗</a>
+          <div class="yt-card__pie">
+            <button type="button" class="btn3d btn3d--sm btn3d--amarillo" data-modal-yt="${esc(id)}" data-yt-titulo="${esc(v.titulo || item.titulo || '')}" data-yt-desc="${esc(item.descripcion || '')}">📺 Abrir en ventana</button>
+            <a class="yt-ext" href="https://www.youtube.com/watch?v=${esc(id)}" target="_blank" rel="noopener">YouTube ↗</a>
+          </div>
         </div>`;
     }).join('');
   }
@@ -652,6 +744,7 @@
       const activa = it.id === state.activaId;
       const fav = state.favs.has(it.id);
       const cat = catById(it.categoria);
+      const vidId = primerYtIdDe(it);
       return `
         <div class="item-plantilla ${activa ? 'activa' : ''}" data-id="${esc(it.id)}" role="option" aria-selected="${activa}" tabindex="0" style="--c:${esc(cat?.color || '#ff595e')}">
           <span class="item-plantilla__icono">${esc(it.icono || '🎬')}</span>
@@ -660,7 +753,8 @@
             <strong>${esc(it.titulo)}</strong>
             <small>${esc(it.descripcion)}</small>
             <div class="item-plantilla__meta">
-              ${it.videos.length ? `<span class="badge-mini badge-mini--yt">▶️ ${it.videos.length} video${it.videos.length > 1 ? 's' : ''}</span>` : ''}
+              ${vidId ? `<span class="badge-mini badge-mini--yt" data-modal-yt="${esc(vidId)}" data-item-id="${esc(it.id)}">▶️ Ver video</span>` : ''}
+              ${it.imagen ? `<span class="badge-mini badge-mini--img" data-ver-img="${esc(it.id)}">🖼️ Ver imagen</span>` : ''}
               ${it.etiquetas.slice(0, 2).map((t) => `<span class="badge-mini">#${esc(t)}</span>`).join('')}
             </div>
           </div>
@@ -695,7 +789,8 @@
         </div>
       </div>
       <p class="ficha-plantilla__desc">${esc(item.descripcion)}</p>
-      ${svgCamara(item.anim)}
+      ${item.imagen ? miniaturaImagenHTML(item) : ''}
+      ${svgCamara(item.anim, item)}
     `;
 
     // 2. Formulario interactivo de variables
@@ -752,7 +847,8 @@
                   <p>${esc(selItem.descripcion)}</p>
                 </div>
               </div>
-              ${selItem.anim ? svgCamara(selItem.anim) : ''}
+              ${selItem.imagen ? miniaturaImagenHTML(selItem) : ''}
+              ${selItem.anim ? svgCamara(selItem.anim, selItem) : ''}
             ` : ''}
           </div>`;
       }
@@ -816,11 +912,11 @@
     selectorContexto = { key, catId };
 
     $('#selector-titulo').textContent = `${cat?.emoji || '🧩'} Elige ${cat?.nombre || 'una opción'}`;
-    $('#selector-sub').textContent = 'Haz clic en la tarjeta que más te guste para usarla en tu escena:';
+    $('#selector-sub').textContent = 'Pasa el mouse sobre una imagen o video para verlo en grande, o haz clic en la tarjeta para elegirla:';
 
     const actualId = state.vals[key]?.itemId;
     $('#selector-grilla').innerHTML = items.map((it) => `
-      <button type="button" class="card-pieza-sel ${it.id === actualId ? 'activa' : ''}" data-elegir-pieza="${esc(it.id)}" style="--c:${esc(cat?.color || '#4c6ef5')}">
+      <div class="card-pieza-sel ${it.id === actualId ? 'activa' : ''}" role="button" tabindex="0" data-elegir-pieza="${esc(it.id)}" style="--c:${esc(cat?.color || '#4c6ef5')}">
         <div class="card-pieza-sel__top">
           <span class="card-pieza-sel__icono">${esc(it.icono || cat?.emoji || '✨')}</span>
           <div>
@@ -829,8 +925,9 @@
           </div>
         </div>
         <p>${esc(it.descripcion)}</p>
-        ${it.anim ? svgCamara(it.anim) : ''}
-      </button>
+        ${it.imagen ? miniaturaImagenHTML(it) : ''}
+        ${it.anim ? svgCamara(it.anim, it) : ''}
+      </div>
     `).join('');
 
     $('#dlg-selector').showModal();
@@ -847,28 +944,35 @@
 
     const cat = catById(state.subCatPieza) || catsPiezas[0];
     const items = itemsDeCat(cat.id);
-    $('#grilla-piezas').innerHTML = items.map((it) => `
+    $('#grilla-piezas').innerHTML = items.map((it) => {
+      const vidId = primerYtIdDe(it);
+      return `
       <article class="card-catalogo" style="--c:${esc(cat.color)}">
         <div class="card-catalogo__top">
           <span class="card-catalogo__icono">${esc(it.icono || cat.emoji)}</span>
           <div>
             <span class="badge-mini">${esc(cat.emoji)} ${esc(cat.nombre)}</span>
+            ${it.comando ? `<span class="badge-mini">${esc(it.comando)}</span>` : ''}
             <h3>${esc(it.titulo)}</h3>
           </div>
         </div>
         <p class="card-catalogo__desc">${esc(it.descripcion)}</p>
-        ${it.anim ? svgCamara(it.anim) : ''}
+        ${it.imagen ? miniaturaImagenHTML(it) : ''}
+        ${it.anim ? svgCamara(it.anim, it) : ''}
         <div class="card-catalogo__fragmento">
           <small>Texto que agrega al prompt:</small>
           <code>${esc(textoPieza(it))}</code>
         </div>
         <div class="card-catalogo__pie">
           <button type="button" class="btn3d btn3d--sm btn3d--verde" data-copiar-texto="${esc(textoPieza(it))}">📋 Copiar texto</button>
+          ${it.imagen ? `<button type="button" class="btn3d btn3d--sm btn3d--amarillo" data-ver-img="${esc(it.id)}">🖼️ Ver imagen</button>` : ''}
+          ${vidId ? `<button type="button" class="btn3d btn3d--sm btn3d--amarillo" data-modal-yt="${esc(vidId)}" data-item-id="${esc(it.id)}">📺 Ver video</button>` : ''}
           <button type="button" class="btn3d btn3d--sm btn3d--blanco solo-profe" data-editar="${esc(it.id)}">✏️ Editar</button>
           <button type="button" class="btn3d btn3d--sm btn3d--rojo solo-profe" data-eliminar="${esc(it.id)}">🗑️</button>
         </div>
       </article>
-    `).join('');
+    `;
+    }).join('');
   }
 
   let moduloProduccion = null;
@@ -966,6 +1070,7 @@
       prompt: 'Video en estilo {estilo}. En {escenario}, vemos a {personaje} mientras {accion:saluda a la cámara}. Movimiento de cámara: {camara}. Audio: {audio}.',
       fragmento: '',
       anim: '',
+      imagen: '',
       etiquetas: [],
       videos: []
     });
@@ -983,6 +1088,7 @@
     f.prompt.value = it.prompt || '';
     f.fragmento.value = it.fragmento || '';
     f.anim.value = it.anim || '';
+    if (f.imagen) f.imagen.value = it.imagen || '';
     f.etiquetas.value = (it.etiquetas || []).join(', ');
     f.videos.value = (it.videos || []).map((v) => (v.titulo ? `${v.url} | ${v.titulo}` : v.url)).join('\n');
 
@@ -1011,6 +1117,7 @@
       prompt: f.prompt.value.trim(),
       fragmento: f.fragmento.value.trim(),
       anim: f.anim.value,
+      imagen: f.imagen ? f.imagen.value.trim() : '',
       etiquetas: f.etiquetas.value.split(',').map((s) => s.trim()).filter(Boolean),
       videos: f.videos.value.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
         const [url, ...t] = l.split('|');
@@ -1173,6 +1280,7 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
 
   // Modal selector visual de piezas
   $('#selector-grilla').addEventListener('click', (e) => {
+    if (e.target.closest('[data-ver-img], [data-modal-yt]')) return;
     const card = e.target.closest('[data-elegir-pieza]');
     if (!card || !selectorContexto) return;
     state.vals[selectorContexto.key] = { itemId: card.dataset.elegirPieza };
@@ -1220,36 +1328,61 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
     toast('📋 ¡Prompt copiado al portapapeles!');
   });
 
-  // Reproducción automática de YouTube al acercar el mouse (hover) sobre diagramas y miniaturas
+  // Abrir modal de Imagen o Video de YouTube al aproximar el mouse (hover) o hacer clic
+  function dispararModalDesdeElemento(el) {
+    if (!el) return;
+    if (el.dataset.verImg) {
+      const it = itemById(el.dataset.verImg);
+      if (it && it.imagen) abrirVisorPorItem(it, 'imagen');
+      return;
+    }
+    if (el.dataset.modalYt) {
+      const vidId = el.dataset.modalYt;
+      const it = el.dataset.itemId ? itemById(el.dataset.itemId) : itemById(state.activaId);
+      const cat = it ? catById(it.categoria) : null;
+      abrirVisorMedia({
+        tipo: 'youtube',
+        ytId: vidId,
+        titulo: el.dataset.ytTitulo || it?.titulo || 'Video de ejemplo en YouTube',
+        descripcion: el.dataset.ytDesc || it?.descripcion || '',
+        badge: it ? `${cat?.emoji || '🎥'} ${it.comando || cat?.nombre || 'Ejemplo'}` : '📺 Video de ejemplo',
+        itemId: it?.id || ''
+      });
+    }
+  }
+
+  let hoverMediaTimer = null;
+  let hoverMediaTarget = null;
+
   document.addEventListener('pointerover', (e) => {
-    const box = e.target.closest('[data-hover-yt]');
-    if (!box || box.contains(e.relatedTarget)) return;
-    const slot = box.querySelector('.diagrama-camara__yt-slot');
-    if (!slot || slot.querySelector('iframe')) return;
-    const id = box.dataset.hoverYt;
-    box.classList.add('reproduciendo-yt');
-    slot.innerHTML = `<iframe class="yt-hover-iframe" src="https://www.youtube-nocookie.com/embed/${esc(id)}?autoplay=1&mute=1&loop=1&playlist=${esc(id)}&controls=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="Ejemplo de cámara en YouTube"></iframe>`;
+    const dlgVisor = $('#dlg-visor-media');
+    if (dlgVisor && dlgVisor.open) return;
+    const trigger = e.target.closest('[data-ver-img], [data-modal-yt]');
+    if (!trigger || trigger.contains(e.relatedTarget)) return;
+    clearTimeout(hoverMediaTimer);
+    hoverMediaTarget = trigger;
+    hoverMediaTimer = setTimeout(() => {
+      if (hoverMediaTarget === trigger) {
+        dispararModalDesdeElemento(trigger);
+      }
+    }, 220);
   });
 
   document.addEventListener('pointerout', (e) => {
-    const box = e.target.closest('[data-hover-yt]');
-    if (!box || box.contains(e.relatedTarget) || box.dataset.fijado === '1') return;
-    const slot = box.querySelector('.diagrama-camara__yt-slot');
-    box.classList.remove('reproduciendo-yt');
-    if (slot) slot.innerHTML = '';
+    const trigger = e.target.closest('[data-ver-img], [data-modal-yt]');
+    if (!trigger || trigger.contains(e.relatedTarget)) return;
+    if (hoverMediaTarget === trigger) {
+      clearTimeout(hoverMediaTimer);
+      hoverMediaTarget = null;
+    }
   });
 
-  // Ficha plantilla y catálogo (favoritos, editar, duplicar, eliminar, copiar pieza)
+  // Ficha plantilla y catálogo (favoritos, editar, duplicar, eliminar, copiar pieza, abrir modal media)
   document.addEventListener('click', async (e) => {
-    const yt = e.target.closest('[data-yt]');
-    if (yt) {
-      const id = yt.dataset.yt;
-      yt.dataset.fijado = '1';
-      yt.classList.add('reproduciendo-yt');
-      const slot = yt.querySelector('.diagrama-camara__yt-slot');
-      if (slot) {
-        slot.innerHTML = `<iframe class="yt-hover-iframe" src="https://www.youtube-nocookie.com/embed/${esc(id)}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin" title="Video de YouTube"></iframe>`;
-      }
+    const mediaTrigger = e.target.closest('[data-ver-img], [data-modal-yt]');
+    if (mediaTrigger) {
+      clearTimeout(hoverMediaTimer);
+      dispararModalDesdeElemento(mediaTrigger);
       return;
     }
 
@@ -1339,6 +1472,15 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
     });
   });
 
+  const dlgVisor = $('#dlg-visor-media');
+  if (dlgVisor) {
+    dlgVisor.addEventListener('close', () => {
+      visorActualKey = null;
+      const cuerpo = $('#visor-cuerpo');
+      if (cuerpo) cuerpo.innerHTML = '';
+    });
+  }
+
   // 5 clics en la claqueta para activar Modo Profe
   let clics = 0, timerClics;
   $('#logo').addEventListener('click', () => {
@@ -1357,6 +1499,7 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
       itemById,
       textoPieza,
       svgCamara,
+      miniaturaImagenHTML,
       copiar: copiarAlPortapapeles,
       toast
     });
