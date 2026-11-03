@@ -143,7 +143,33 @@
       }
     }
 
-    // 2. Respaldo con alumnos_clean.json de Bienvenido
+    // 2. Respaldo contra alumnos creados desde admin.html en el navegador ('pf_alumnos_nuevos_2026')
+    try {
+      const rawNuevos = localStorage.getItem('pf_alumnos_nuevos_2026');
+      if (rawNuevos) {
+        const nuevos = JSON.parse(rawNuevos);
+        if (Array.isArray(nuevos)) {
+          const encontradosLocales = nuevos.filter((s) => {
+            if (String(s.password) !== cleanPass) return false;
+            const fullName = norm(s.name);
+            const firstName = fullName.split(/\s+/)[0];
+            return norm(s.username) === cleanUser || norm(s.id) === cleanUser || fullName === cleanUser || firstName === cleanUser;
+          });
+          if (encontradosLocales.length) {
+            // Sincronizar automáticamente a Firestore para que pueda entrar desde cualquier equipo
+            if (db) {
+              encontradosLocales.forEach((st) => {
+                const docKey = st.id || st.username;
+                if (docKey) db.collection('students').doc(docKey).set(st, { merge: true }).catch(() => {});
+              });
+            }
+            return encontradosLocales;
+          }
+        }
+      }
+    } catch (e) {}
+
+    // 3. Respaldo con alumnos_clean.json de Bienvenido
     try {
       if (!cacheAlumnosJson) {
         const r = await fetch(ALUMNOS_FALLBACK_URL);
