@@ -80,7 +80,7 @@
     data: borrador || clonar(original),
     hayBorrador: !!borrador,
     favs: new Set(leerJSON(localStorage, LS_FAVS, [])),
-    modo: 'produccion',     // 'produccion' | 'video' | 'camara' | 'imagen' | 'piezas'
+    modo: window.PFUsuarios?.getActiveStudent?.() ? 'produccion' : 'video', // 'produccion' solo si hay alumno logueado
     subCatPieza: 'estilo',  // subcategoría activa en el catálogo de piezas
     q: '',
     tag: null,
@@ -535,6 +535,13 @@
   }
 
   function renderTabsModo() {
+    const alumnoActivo = !!window.PFUsuarios?.getActiveStudent?.();
+    const tabPeli = $('#tab-mi-pelicula');
+    if (tabPeli) tabPeli.hidden = !alumnoActivo;
+    if (!alumnoActivo && state.modo === 'produccion') {
+      state.modo = 'video';
+    }
+
     $$('#tabs-modo .tab-modo').forEach((b) => {
       b.classList.toggle('activa', b.dataset.modo === state.modo);
     });
@@ -1290,6 +1297,16 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
       toast
     });
   }
+  window.addEventListener('pf_student_changed', (ev) => {
+    state.modo = ev.detail ? 'produccion' : 'video';
+    renderTodo();
+  });
+  window.addEventListener('pf_load_movie', () => {
+    if (window.PFUsuarios?.getActiveStudent?.()) {
+      state.modo = 'produccion';
+      renderTodo();
+    }
+  });
   renderTodo();
   const params = new URLSearchParams(location.search);
   if ((params.has('profe') || location.hash === '#profe') && !state.profe) {

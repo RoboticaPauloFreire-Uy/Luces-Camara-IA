@@ -501,24 +501,28 @@ window.crearProduccion = function crearProduccion(api) {
   // ---------- Render ----------
   function render() {
     const root = $('#vista-produccion');
+    const st = window.PFUsuarios?.getActiveStudent?.();
+    if (!st) {
+      root.innerHTML = '';
+      return;
+    }
     const total = tareas().length;
     const listo = hechas();
     const pct = Math.round((listo / total) * 100);
     const e = prod.etapa;
 
-    const st = window.PFUsuarios?.getActiveStudent?.();
     root.innerHTML = `
       <div class="prod-cab">
         <div class="prod-cab__titulo">
           <span class="prod-cab__emoji">🎞️</span>
           <label>
-            <small>${st ? `Película de <b>${esc(st.name)}</b> (${esc(st.gradeName || '')})` : 'Título de tu película'}</small>
+            <small>Película de <b>${esc(st.name)}</b> (${esc(st.gradeName || '')})</small>
             <input class="input-titulo" data-campo="titulo" value="${esc(prod.titulo)}" maxlength="60" placeholder="Escribe aquí el título de tu película…">
           </label>
         </div>
         <div class="prod-cab__acciones-cuenta">
           <button type="button" class="btn3d btn3d--sm btn3d--verde" data-guardar-cuenta>
-            💾 ${st ? 'Guardar mi película' : 'Guardar (Iniciar sesión)'}
+            💾 Guardar mi película
           </button>
           <button type="button" class="btn3d btn3d--sm btn3d--amarillo" data-mis-peliculas>
             🎞️ Mis películas
