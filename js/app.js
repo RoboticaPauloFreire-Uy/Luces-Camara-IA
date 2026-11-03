@@ -51,7 +51,14 @@
     genero: '🍿 ¿De qué género es tu película?',
     descripcion_personaje: '🦸 ¿Cómo es el personaje que quieres diseñar?',
     expresion: '😄 ¿Qué expresión tiene en la cara?',
-    tema: '🖍️ ¿Qué quieres que aparezca en el dibujo para colorear?'
+    tema: '🖍️ ¿Qué quieres que aparezca en la escena?',
+    cambio_noche: '🌙 ¿Qué se enciende o aparece cuando llega la noche?',
+    estacion_inicio: '🌸 ¿En qué estación del año empieza el video?',
+    estacion_final: '🍂 ¿A qué estación del año se transforma?',
+    objeto_tecnico: '⚙️ ¿Qué invento, robot u objeto quieres ver por dentro?',
+    efecto_entrada: '✨ ¿Qué efecto mágico se abre al principio?',
+    sorpresa: '🎁 ¿Qué objeto o personaje aparece revelado en el centro?',
+    tipo_zoom: '🔎 ¿Qué tipo de zoom de lente quieres usar?'
   };
 
   // ---------- Utilidades ----------
@@ -322,6 +329,52 @@
           <text x="120" y="42" font-size="16">☁️</text>
           <g class="anim-dolly-in"><circle cx="95" cy="42" r="10" fill="rgba(56,189,248,0.35)" stroke="#38bdf8" stroke-width="2"/></g>
           <circle cx="176" cy="68" r="15" fill="#fbbf24"/><text x="176" y="74" text-anchor="middle" font-size="17">🧑</text>
+        </svg>`
+      },
+      'flythrough': {
+        badge: 'FLYTHROUGH · VUELO ATRAVESANDO EL LUGAR',
+        svg: `<svg viewBox="0 0 220 90" class="cam-svg">
+          <rect x="75" y="14" width="24" height="62" rx="4" fill="none" stroke="#94a3b8" stroke-width="3"/>
+          <rect x="125" y="14" width="24" height="62" rx="4" fill="none" stroke="#94a3b8" stroke-width="3"/>
+          <line x1="20" y1="45" x2="195" y2="45" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6 4"/>
+          <g class="anim-dolly-in"><circle cx="42" cy="45" r="12" fill="#38bdf8"/><text x="42" y="50" text-anchor="middle" font-size="14">🚀</text></g>
+        </svg>`
+      },
+      'zoom': {
+        badge: 'ZOOM ÓPTICO · EL LENTE ACERCA LA IMAGEN',
+        svg: `<svg viewBox="0 0 220 90" class="cam-svg">
+          <rect x="24" y="31" width="32" height="28" rx="6" fill="#38bdf8"/>
+          <polygon points="56,35 150,15 150,75 56,55" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5 3"/>
+          <circle cx="172" cy="45" r="20" fill="#fbbf24"/><text x="172" y="52" text-anchor="middle" font-size="22">😮</text>
+        </svg>`
+      },
+      'wideangle': {
+        badge: 'GRAN ANGULAR · CAMPO DE VISIÓN SÚPER AMPLIO',
+        svg: `<svg viewBox="0 0 220 90" class="cam-svg">
+          <path d="M40,45 L180,6 A75,75 0 0,1 180,84 Z" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2.5"/>
+          <circle cx="38" cy="45" r="12" fill="#38bdf8"/><text x="38" y="50" text-anchor="middle" font-size="13">🌐</text>
+          <text x="145" y="34" font-size="18">🏔️</text><text x="120" y="54" font-size="22">😄</text><text x="150" y="72" font-size="18">🌲</text>
+        </svg>`
+      },
+      'overhead': {
+        badge: 'PLANO CENITAL 90° · VISTA RECTA DESDE EL TECHO',
+        svg: `<svg viewBox="0 0 220 90" class="cam-svg">
+          <circle cx="110" cy="18" r="12" fill="#38bdf8"/><text x="110" y="23" text-anchor="middle" font-size="13">🎥</text>
+          <line x1="110" y1="30" x2="110" y2="62" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 3"/>
+          <polygon points="103,56 110,66 117,56" fill="#38bdf8"/>
+          <ellipse cx="110" cy="74" rx="46" ry="10" fill="rgba(251,191,36,0.3)" stroke="#fbbf24" stroke-width="2"/>
+          <text x="110" y="78" text-anchor="middle" font-size="16">🧑</text>
+        </svg>`
+      },
+      'hyperlapse': {
+        badge: 'HYPERLAPSE · TIEMPO RÁPIDO EN MOVIMIENTO',
+        svg: `<svg viewBox="0 0 220 90" class="cam-svg">
+          <line x1="20" y1="62" x2="200" y2="62" stroke="#fbbf24" stroke-width="3" stroke-dasharray="8 4"/>
+          <g class="anim-dolly-in">
+            <rect x="30" y="34" width="32" height="22" rx="5" fill="#38bdf8"/>
+            <text x="80" y="32" font-size="18">☀️💨</text>
+          </g>
+          <text x="175" y="54" font-size="22">🏙️</text>
         </svg>`
       }
     }[anim];

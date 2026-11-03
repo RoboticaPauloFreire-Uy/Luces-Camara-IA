@@ -186,6 +186,62 @@ window.BIBLIOTECA = {
       "videos": []
     },
     {
+      "id": "vid-dia-a-noche",
+      "categoria": "video",
+      "icono": "🌓",
+      "titulo": "Transición de Día a Noche (Day to Night)",
+      "descripcion": "El sol baja, el cielo cambia de colores y se encienden las luces y las estrellas en una sola toma continua.",
+      "prompt": "Video en estilo {estilo} mostrando {escenario}. Transición fluida y continua de día a noche (day to night transition): comienza con un sol radiante, pasa por un atardecer naranja y violeta y termina en una noche estrellada mientras {cambio_noche:se encienden faroles brillantes y aparecen luciérnagas alrededor} de {personaje}. Movimiento de cámara: {camara}. Audio: {audio}.",
+      "etiquetas": [
+        "tiempo",
+        "naturaleza",
+        "ciencias"
+      ],
+      "videos": []
+    },
+    {
+      "id": "vid-estaciones",
+      "categoria": "video",
+      "icono": "🍂",
+      "titulo": "Cambio de las 4 Estaciones (Season Change)",
+      "descripcion": "En pocos segundos el paisaje pasa por primavera, verano, otoño e invierno sin cortar la escena.",
+      "prompt": "Video educativo y mágico en estilo {estilo} en {escenario}. Transición visual continua entre las estaciones del año (season change transition): empieza en {estacion_inicio|primavera llena de flores de colores|verano soleado y verde} y se transforma suavemente hacia {estacion_final|otoño con hojas naranjas y doradas cayendo al viento|invierno cubierto de nieve blanca con copos cayendo}, mientras {personaje} observa maravillado el cambio. Movimiento de cámara: {camara}. Audio: {audio}.",
+      "etiquetas": [
+        "tiempo",
+        "naturaleza",
+        "ciencias"
+      ],
+      "videos": []
+    },
+    {
+      "id": "vid-exploded-view",
+      "categoria": "video",
+      "icono": "⚙️",
+      "titulo": "Despiece Flotante / Vista Explosiva (Exploded View)",
+      "descripcion": "Un invento, robot o máquina se separa pieza por pieza en el aire para ver cómo funciona por dentro y se vuelve a armar.",
+      "prompt": "Animación técnica espectacular en estilo {estilo}. En el centro de {escenario}, el objeto {objeto_tecnico:un reloj robótico futurista lleno de engranajes dorados y cristales de energía} realiza un despiece visual en el aire (exploded view / teardown): todas sus piezas, tuercas, circuitos y partes internas se separan flotando ordenadamente en 3D mostrando su interior y luego vuelven a ensamblarse con precisión. Movimiento de cámara: {camara}. Audio: {audio}.",
+      "etiquetas": [
+        "ciencias",
+        "efectos",
+        "creatividad"
+      ],
+      "videos": []
+    },
+    {
+      "id": "vid-reveal",
+      "categoria": "video",
+      "icono": "🎁",
+      "titulo": "Aparición y Revelación Épica (Product Reveal)",
+      "descripcion": "Un objeto o personaje secreto aparece entre humo de colores, cortinas de luz o partículas brillantes.",
+      "prompt": "Animación de revelación cinematográfica (epic reveal shot) en estilo {estilo}, ubicada en {escenario}. Al principio el lugar está envuelto en {efecto_entrada|una nube de niebla luminosa y chispas doradas|haces de luz láser que se cruzan|pétalos y hojas brillantes girando en espiral} que se abren suavemente para revelar en el centro {sorpresa:un trofeo de cristal flotante que ilumina todo el salón}. Movimiento de cámara: {camara}. Audio: {audio}.",
+      "etiquetas": [
+        "efectos",
+        "creatividad",
+        "épico"
+      ],
+      "videos": []
+    },
+    {
       "id": "cam-dolly-in",
       "categoria": "camara",
       "icono": "🎯",
@@ -620,6 +676,88 @@ window.BIBLIOTECA = {
       "videos": []
     },
     {
+      "id": "cam-flythrough",
+      "categoria": "camara",
+      "icono": "🚀",
+      "anim": "flythrough",
+      "comando": "Flythrough (Vuelo atravesando el lugar)",
+      "titulo": "Vuelo atravesando el escenario (Flythrough)",
+      "descripcion": "La cámara vuela hacia adelante cruzando puertas, pasillos, puentes o entre los árboles para recorrer todo el lugar.",
+      "fragmento": "movimiento de vuelo continuo atravesando el escenario por dentro (camera flythrough)",
+      "prompt": "Video inmersivo en estilo {estilo}. Comando de cámara: vuelo continuo atravesando el escenario (flythrough shot) donde la cámara avanza flotando suavemente por el interior de {escenario}, pasando bajo arcos y detalles hasta encontrar a {personaje} que {accion:trabaja concentrado en su mesa de aventuras}. Audio: {audio}.",
+      "etiquetas": [
+        "movimiento",
+        "aventura"
+      ],
+      "videos": []
+    },
+    {
+      "id": "cam-zoom",
+      "categoria": "camara",
+      "icono": "🔎",
+      "anim": "zoom",
+      "comando": "Optical Zoom (Zoom de lente)",
+      "titulo": "Zoom de lente rápido o suave (Optical Zoom)",
+      "descripcion": "La cámara no camina, pero el lente acerca o aleja la imagen (como cuando pellizcas la pantalla del celular).",
+      "fragmento": "zoom óptico de lente acercándose directamente al objetivo sin mover la posición de la cámara",
+      "prompt": "Video en estilo {estilo} en {escenario}. Comando de cámara: zoom óptico de lente ({tipo_zoom|zoom in suave acercándose al rostro|zoom in rápido de sorpresa estilo comedia|zoom out óptico abriendo el encuadre}) enfocado en {personaje} justo cuando {accion:se da cuenta de una pista secreta y abre grandes los ojos}. Audio: {audio}.",
+      "etiquetas": [
+        "movimiento",
+        "efectos",
+        "básico"
+      ],
+      "videos": []
+    },
+    {
+      "id": "cam-wideangle",
+      "categoria": "camara",
+      "icono": "🌐",
+      "anim": "wideangle",
+      "comando": "Ultra Wide-Angle Lens (Gran Angular)",
+      "titulo": "Lente Gran Angular / Ojo de Pez (Wide-Angle)",
+      "descripcion": "Un lente súper amplio que hace que quepa todo el lugar en la pantalla y lo que está cerca se vea enorme y divertido.",
+      "fragmento": "filmado con lente ultra gran angular (14mm wide-angle lens) con amplio campo de visión y perspectiva profunda",
+      "prompt": "Video llamativo en estilo {estilo} dentro de {escenario}. Comando de cámara: lente ultra gran angular (wide-angle lens de amplio campo de visión) muy cerca de {personaje}, quien {accion:se asoma curioso hacia la lente haciendo una cara divertida} mientras se ve todo el escenario gigante detrás. Audio: {audio}.",
+      "etiquetas": [
+        "planos",
+        "lentes",
+        "humor"
+      ],
+      "videos": []
+    },
+    {
+      "id": "cam-cenital",
+      "categoria": "camara",
+      "icono": "⬇️",
+      "anim": "overhead",
+      "comando": "Overhead / Top-Down Shot (Plano Cenital 90°)",
+      "titulo": "Vista recta desde el techo (Plano Cenital / Overhead)",
+      "descripcion": "La cámara está en el cielo mirando totalmente recta hacia el piso (90 grados), como si fueras un pájaro justo encima.",
+      "fragmento": "plano cenital totalmente vertical desde arriba hacia abajo a 90 grados (overhead top-down shot)",
+      "prompt": "Video simétrico en estilo {estilo}. Comando de cámara: plano cenital totalmente vertical de arriba hacia abajo a 90 grados (overhead top-down shot) sobre {escenario}, mostrando desde el techo cómo {personaje} {accion:dibuja un gran mapa de colores en el suelo rodeado de sus herramientas}. Audio: {audio}.",
+      "etiquetas": [
+        "ángulos",
+        "planos"
+      ],
+      "videos": []
+    },
+    {
+      "id": "cam-hyperlapse",
+      "categoria": "camara",
+      "icono": "⚡",
+      "anim": "hyperlapse",
+      "comando": "Hyperlapse (Cámara rápida en movimiento)",
+      "titulo": "Tiempo rápido mientras la cámara avanza (Hyperlapse)",
+      "descripcion": "Como un time-lapse donde el tiempo va súper rápido, ¡pero además la cámara va avanzando por el camino!",
+      "fragmento": "hyperlapse dinámico con el tiempo acelerado mientras la cámara avanza de forma fluida por el escenario",
+      "prompt": "Video vibrante en estilo {estilo}. Comando de cámara: hyperlapse en movimiento donde la cámara avanza recorriendo {escenario} a gran velocidad mientras las nubes, las luces y el entorno se mueven acelerados alrededor de {personaje}, que {accion:camina decidido hacia su destino}. Audio: {audio}.",
+      "etiquetas": [
+        "movimiento",
+        "efectos"
+      ],
+      "videos": []
+    },
+    {
       "id": "img-portada",
       "categoria": "imagen",
       "icono": "📕",
@@ -668,6 +806,45 @@ window.BIBLIOTECA = {
       "prompt": "Página de libro para colorear para niños, únicamente líneas negras limpias y bien definidas sobre fondo totalmente blanco puro, sin sombras grises ni rellenos de color. Escena: {tema:un astronauta simpático jugando al fútbol en la Luna con un pequeño extraterrestre}. Trazo claro e infantil.",
       "etiquetas": [
         "arte",
+        "colegio"
+      ],
+      "videos": []
+    },
+    {
+      "id": "img-revista",
+      "categoria": "imagen",
+      "icono": "📰",
+      "titulo": "Portada de Revista Escolar / Científica (Magazine)",
+      "descripcion": "Tu personaje o invento aparece como protagonista en la tapa de una revista famosa.",
+      "prompt": "Fotografía editorial de portada de revista (magazine cover style) en estilo {estilo}. En el centro aparece {personaje} presentando {tema:su nuevo robot ecológico escolar} en {escenario}. Iluminación profesional de estudio, composición limpia y elegante de tapa de revista con colores nítidos.",
+      "etiquetas": [
+        "creatividad",
+        "colegio"
+      ],
+      "videos": []
+    },
+    {
+      "id": "img-retrato-pro",
+      "categoria": "imagen",
+      "icono": "📸",
+      "titulo": "Retrato de Estudio Profesional (Studio Headshot)",
+      "descripcion": "Una foto de credencial o retrato de estudio con luces perfectas y fondo limpio.",
+      "prompt": "Retrato de estudio profesional (studio pro headshot) en estilo {estilo} de {personaje}, con expresión {expresion|alegre y confiada|curiosa e inteligente|orgullosa y amable}. Iluminación suave de estudio fotográfico (softbox lighting), enfoque ultra nítido en los ojos y fondo limpio de color suave.",
+      "etiquetas": [
+        "personajes",
+        "básico"
+      ],
+      "videos": []
+    },
+    {
+      "id": "img-exploded",
+      "categoria": "imagen",
+      "icono": "🔩",
+      "titulo": "Infografía de Piezas Separadas (Exploded View)",
+      "descripcion": "Muestra un objeto o máquina desarmado en el aire para ver todas sus partes en una lámina de ciencias.",
+      "prompt": "Ilustración técnica de vista explosiva (exploded view / teardown) en estilo {estilo} de {objeto_tecnico:una patineta voladora solar}. El objeto se muestra con todas sus piezas, engranajes y partes internas separadas flotando ordenadamente en el aire sobre un fondo limpio, ideal para infografía escolar.",
+      "etiquetas": [
+        "ciencias",
         "colegio"
       ],
       "videos": []
@@ -793,6 +970,174 @@ window.BIBLIOTECA = {
       "prompt": "ilustración animada en acuarela sobre papel texturizado, trazos suaves y colores pastel luminosos",
       "etiquetas": [
         "arte"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-miniworld",
+      "categoria": "estilo",
+      "icono": "🔍",
+      "titulo": "Mundo en Miniatura / Maqueta (MiniWorld Tilt-Shift)",
+      "descripcion": "Todo el escenario parece una maqueta de juguete chiquitita vista de cerca con desenfoque suave arriba y abajo.",
+      "fragmento": "efecto mundo en miniatura (tilt-shift diorama style), donde todo parece una maqueta diminuta de juguete con enfoque selectivo y colores vibrantes",
+      "prompt": "efecto mundo en miniatura (tilt-shift diorama style), donde todo parece una maqueta diminuta de juguete con enfoque selectivo y colores vibrantes",
+      "etiquetas": [
+        "efectos",
+        "lentes"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-golden-hour",
+      "categoria": "estilo",
+      "icono": "🌅",
+      "titulo": "Hora Dorada del Atardecer (Golden Hour)",
+      "descripcion": "Luz cálida y dorada del sol bajando, con sombras largas y destellos suaves.",
+      "fragmento": "iluminación de hora dorada (golden hour) con luz solar cálida y suave de atardecer y rayos volumétricos dorados",
+      "prompt": "iluminación de hora dorada (golden hour) con luz solar cálida y suave de atardecer y rayos volumétricos dorados",
+      "etiquetas": [
+        "luz",
+        "cine"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-neon-city",
+      "categoria": "estilo",
+      "icono": "🌃",
+      "titulo": "Noche Cyberpunk de Neón (NeonCity)",
+      "descripcion": "Estética nocturna futurista iluminada con carteles brillantes fucsias, azules y violetas.",
+      "fragmento": "estética urbana nocturna cyberpunk (neon city style) iluminada con luces de neón brillantes en tonos cian, magenta y violeta reflejadas en el suelo",
+      "prompt": "estética urbana nocturna cyberpunk (neon city style) iluminada con luces de neón brillantes en tonos cian, magenta y violeta reflejadas en el suelo",
+      "etiquetas": [
+        "luz",
+        "ciencia ficción"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-rainy-night",
+      "categoria": "estilo",
+      "icono": "🌧️",
+      "titulo": "Noche de Lluvia con Reflejos (RainyNight)",
+      "descripcion": "Gotas de lluvia cayendo bajo los faroles y charcos que reflejan todas las luces como espejos.",
+      "fragmento": "atmósfera de noche lluviosa cinematográfica (rainy night) con gotas de lluvia visibles a contraluz y charcos brillantes que reflejan las luces",
+      "prompt": "atmósfera de noche lluviosa cinematográfica (rainy night) con gotas de lluvia visibles a contraluz y charcos brillantes que reflejan las luces",
+      "etiquetas": [
+        "clima",
+        "luz"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-snow-world",
+      "categoria": "estilo",
+      "icono": "❄️",
+      "titulo": "Mundo Nevado Invernal (SnowWorld)",
+      "descripcion": "Todo cubierto de nieve blanca esponjosa mientras caen copos suaves del cielo.",
+      "fragmento": "ambiente invernal nevado (snow world) con todo el escenario cubierto de nieve blanca brillante y copos cayendo suavemente",
+      "prompt": "ambiente invernal nevado (snow world) con todo el escenario cubierto de nieve blanca brillante y copos cayendo suavemente",
+      "etiquetas": [
+        "clima",
+        "naturaleza"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-fog",
+      "categoria": "estilo",
+      "icono": "🌫️",
+      "titulo": "Niebla Misteriosa con Rayos de Luz (Fog)",
+      "descripcion": "Una neblina suave cubre el suelo y deja ver los rayos de luz cruzando el aire.",
+      "fragmento": "atmósfera con niebla misteriosa y bruma suave (volumetric fog) atravesada por haces de luz",
+      "prompt": "atmósfera con niebla misteriosa y bruma suave (volumetric fog) atravesada por haces de luz",
+      "etiquetas": [
+        "clima",
+        "misterio"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-autumn",
+      "categoria": "estilo",
+      "icono": "🍁",
+      "titulo": "Colores y Hojas de Otoño (Autumn)",
+      "descripcion": "Tonos naranjas, rojos y dorados con hojas de otoño volando con la brisa.",
+      "fragmento": "estética cálida de otoño (autumn colors) con árboles y hojas doradas, naranjas y rojizas flotando en el viento",
+      "prompt": "estética cálida de otoño (autumn colors) con árboles y hojas doradas, naranjas y rojizas flotando en el viento",
+      "etiquetas": [
+        "clima",
+        "naturaleza"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-vintage-film",
+      "categoria": "estilo",
+      "icono": "📽️",
+      "titulo": "Película Analógica Retro (VintageFilm)",
+      "descripcion": "Colores nostálgicos y textura de rollo de cine clásico de hace décadas.",
+      "fragmento": "estética de película analógica retro en 35mm (vintage film look) con colores cálidos nostálgicos y grano suave de cine clásico",
+      "prompt": "estética de película analógica retro en 35mm (vintage film look) con colores cálidos nostálgicos y grano suave de cine clásico",
+      "etiquetas": [
+        "cine",
+        "historia"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-studio-pro",
+      "categoria": "estilo",
+      "icono": "💡",
+      "titulo": "Iluminación de Estudio Profesional (StudioPro)",
+      "descripcion": "Luz limpia y perfecta como en un set de fotografía o televisión profesional.",
+      "fragmento": "iluminación profesional de estudio a tres puntos (studio pro lighting), colores puros, sombras suaves y máxima nitidez",
+      "prompt": "iluminación profesional de estudio a tres puntos (studio pro lighting), colores puros, sombras suaves y máxima nitidez",
+      "etiquetas": [
+        "luz",
+        "cine"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-old-money",
+      "categoria": "estilo",
+      "icono": "🏛️",
+      "titulo": "Clásico Elegante de Época (Classic / OldMoney)",
+      "descripcion": "Estilo clásico, refinado y elegante como de academia antigua o película histórica.",
+      "fragmento": "estética clásica, tradicional y elegante (classic timeless style) con tonos cálidos sobrios, madera y luz natural suave",
+      "prompt": "estética clásica, tradicional y elegante (classic timeless style) con tonos cálidos sobrios, madera y luz natural suave",
+      "etiquetas": [
+        "historia",
+        "cine"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-double-exposure",
+      "categoria": "estilo",
+      "icono": "🌗",
+      "titulo": "Doble Exposición Artística (DoubleExposure)",
+      "descripcion": "Dentro de la silueta del personaje se ve un paisaje o un cielo estrellado mezclado de forma artística.",
+      "fragmento": "efecto visual artístico de doble exposición (double exposure) donde la silueta del personaje se fusiona suavemente con el paisaje en su interior",
+      "prompt": "efecto visual artístico de doble exposición (double exposure) donde la silueta del personaje se fusiona suavemente con el paisaje en su interior",
+      "etiquetas": [
+        "arte",
+        "efectos"
+      ],
+      "videos": []
+    },
+    {
+      "id": "est-luxury-ad",
+      "categoria": "estilo",
+      "icono": "✨",
+      "titulo": "Comercial Brillante de Alta Gama (LuxuryAd)",
+      "descripcion": "Reflejos impecables, destellos elegantes y acabado ultra pulido como un anuncio de cine.",
+      "fragmento": "estética premium de comercial cinematográfico (high-end commercial style) con iluminación dramática, reflejos brillantes y máxima definición",
+      "prompt": "estética premium de comercial cinematográfico (high-end commercial style) con iluminación dramática, reflejos brillantes y máxima definición",
+      "etiquetas": [
+        "cine",
+        "luz"
       ],
       "videos": []
     },
