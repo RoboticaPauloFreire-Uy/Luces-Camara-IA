@@ -911,7 +911,8 @@ window.BIBLIOTECA = {
         "animación",
         "básico"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Caricatura_2D_colorida_b6d71080.jpg"
     },
     {
       "id": "est-papel",
@@ -1133,7 +1134,8 @@ window.BIBLIOTECA = {
         "historia",
         "cine"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Clásico_Elegante_de_Época_(Classic_3481a067.jpg"
     },
     {
       "id": "est-double-exposure",
@@ -1147,7 +1149,8 @@ window.BIBLIOTECA = {
         "arte",
         "efectos"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Doble_Exposición_Artística_(DoubleExposure)_89738494.jpg"
     },
     {
       "id": "est-luxury-ad",
