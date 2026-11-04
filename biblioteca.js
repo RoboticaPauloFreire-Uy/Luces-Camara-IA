@@ -896,7 +896,8 @@ window.BIBLIOTECA = {
         "animación",
         "arte"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Anime___Estudio_Ghibli_e2f2d05e.jpg"
     },
     {
       "id": "est-2d",
@@ -968,7 +969,8 @@ window.BIBLIOTECA = {
         "realista",
         "cine"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Cine_realista_(Live_Action)_22cc7c3f.jpg"
     },
     {
       "id": "est-acuarela",
@@ -1116,7 +1118,8 @@ window.BIBLIOTECA = {
         "luz",
         "cine"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Iluminación_de_Estudio_Profesional_(StudioPro)_778ed5c6.jpg"
     },
     {
       "id": "est-old-money",
@@ -1158,7 +1161,8 @@ window.BIBLIOTECA = {
         "cine",
         "luz"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Comercial_Brillante_de_Alta_Gama_6c90bda0.jpg"
     },
     {
       "id": "per-robot",
