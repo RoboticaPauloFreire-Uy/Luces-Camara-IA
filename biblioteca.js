@@ -78,7 +78,7 @@ window.BIBLIOTECA = {
       "categoria": "video",
       "icono": "🗺️",
       "titulo": "El gran descubrimiento",
-      "descripcion": "Tu personaje explora un lugar incre?ble y descubre algo sorprendente.",
+      "descripcion": "Tu personaje explora un lugar increíble y descubre algo sorprendente.",
       "prompt": "Video en estilo {estilo}. En {escenario}, vemos a {personaje}. Mientras avanza con curiosidad, {accion:encuentra un objeto antiguo que brilla con luz dorada y lo levanta con cuidado}. La expresión de su rostro pasa de la curiosidad al asombro total. Movimiento de cámara: {camara}. Iluminación cinematográfica con partículas flotando en el aire y colores muy vivos. Audio: {audio}.",
       "etiquetas": [
         "aventura",
@@ -92,7 +92,7 @@ window.BIBLIOTECA = {
       "categoria": "video",
       "icono": "🗣️",
       "titulo": "Personaje hablando a cámara",
-      "descripcion": "Tu personaje mira a c?mara, hace un gesto y dice una frase en 8 segundos.",
+      "descripcion": "Tu personaje mira a cámara, hace un gesto y dice una frase en 8 segundos.",
       "prompt": "Video en estilo {estilo}. En {escenario}, aparece {personaje} mirando directamente a la lente. Con gesto {actitud|muy alegre y entusiasta|misterioso susurrando|sorprendido abriendo mucho los ojos|orgulloso como un héroe}, saluda y dice claramente en español: \"{frase:¡Hola amigos! ¿Están listos para esta aventura?}\". Movimiento de cámara: {camara}. Labios sincronizados con la voz, ojos muy expresivos. Audio: voz clara del personaje y {audio}.",
       "etiquetas": [
         "diálogo",
@@ -106,7 +106,7 @@ window.BIBLIOTECA = {
       "categoria": "video",
       "icono": "⚡",
       "titulo": "Persecución o carrera épica",
-      "descripcion": "Escena llena de energ?a donde el personaje corre, vuela o esquiva cosas.",
+      "descripcion": "Escena llena de energía donde el personaje corre, vuela o esquiva cosas.",
       "prompt": "Escena de acción dinámica en estilo {estilo}. {personaje} {accion:corre a toda velocidad saltando sobre rocas brillantes} a través de {escenario}. El viento mueve su ropa y levanta chispas y hojas a su paso. Velocidad de la escena: {velocidad|velocidad normal llena de energía|cámara lenta épica en el momento del salto|cámara rápida divertida}. Movimiento de cámara: {camara}. Audio: {audio}.",
       "etiquetas": [
         "acción",
@@ -120,7 +120,7 @@ window.BIBLIOTECA = {
       "categoria": "video",
       "icono": "🔬",
       "titulo": "Mini documental de ciencias",
-      "descripcion": "Explica un fen?meno de la naturaleza o del espacio como en televisi?n.",
+      "descripcion": "Explica un fenómeno de la naturaleza o del espacio como en televisión.",
       "prompt": "Toma de documental educativo en estilo {estilo}. Ubicación: {escenario}. Se observa en detalle cómo {fenomeno:la lava brillante sube por el cráter y lanza pequeñas chispas al cielo nocturno}. La atmósfera tiene un clima {clima|despejado y nítido|con niebla suave|con lluvia ligera|al atardecer dorado}. Movimiento de cámara: {camara}. Un narrador con voz cálida de documental explica en español: \"{explicacion:Así es como la naturaleza transforma nuestro planeta cada día}\". Audio de fondo: {audio}.",
       "etiquetas": [
         "ciencias",
@@ -134,7 +134,7 @@ window.BIBLIOTECA = {
       "categoria": "video",
       "icono": "✨",
       "titulo": "Transformación mágica",
-      "descripcion": "Algo com?n se transforma en algo extraordinario entre chispas de luz.",
+      "descripcion": "Algo común se transforma en algo extraordinario entre chispas de luz.",
       "prompt": "Escena mágica en estilo {estilo}, ambientada en {escenario}. {personaje} toca con cuidado {objeto_inicial:una pequeña semilla de cristal} y, rodeada de una espiral de luces de color {color_magia|azul eléctrico y dorado|verde esmeralda brillante|rosa y violeta estelar}, se transforma suavemente en {objeto_final:un árbol luminoso con frutas flotantes}. El personaje reacciona con una gran sonrisa. Movimiento de cámara: {camara}. Audio: {audio} con campanas mágicas.",
       "etiquetas": [
         "fantasía",
@@ -176,7 +176,7 @@ window.BIBLIOTECA = {
       "categoria": "video",
       "icono": "🎭",
       "titulo": "Teatro de emociones",
-      "descripcion": "Muestra c?mo cambia lo que siente tu personaje con gestos y expresiones.",
+      "descripcion": "Muestra cómo cambia lo que siente tu personaje con gestos y expresiones.",
       "prompt": "Escena expresiva en estilo {estilo} dentro de {escenario}. Vemos a {personaje}, que al principio se siente {emocion_inicial|un poco triste y pensativo|nervioso mirando a todos lados|muy concentrado} pero de pronto {motivo:recibe una carta brillante con una gran noticia} y su cara se ilumina sintiéndose {emocion_final|súper feliz dando un salto de alegría|aliviado con una gran sonrisa|emocionado hasta las lágrimas}. Movimiento de cámara: {camara}. Audio: {audio}.",
       "etiquetas": [
         "emociones",
@@ -204,7 +204,7 @@ window.BIBLIOTECA = {
       "categoria": "video",
       "icono": "🍂",
       "titulo": "Cambio de las 4 Estaciones (Season Change)",
-      "descripcion": "El paisaje pasa por primavera, verano, oto?o e invierno sin cortes.",
+      "descripcion": "El paisaje pasa por primavera, verano, otoño e invierno sin cortes.",
       "prompt": "Video educativo y mágico en estilo {estilo} en {escenario}. Transición visual continua entre las estaciones del año (season change transition): empieza en {estacion_inicio|primavera llena de flores de colores|verano soleado y verde} y se transforma suavemente hacia {estacion_final|otoño con hojas naranjas y doradas cayendo al viento|invierno cubierto de nieve blanca con copos cayendo}, mientras {personaje} observa maravillado el cambio. Movimiento de cámara: {camara}. Audio: {audio}.",
       "etiquetas": [
         "tiempo",
@@ -248,7 +248,7 @@ window.BIBLIOTECA = {
       "anim": "dolly-in",
       "comando": "Dolly In (Acercamiento)",
       "titulo": "Acercarse despacio (Dolly In)",
-      "descripcion": "La c?mara avanza despacio hacia el personaje para mostrar emoci?n.",
+      "descripcion": "La cámara avanza despacio hacia el personaje para mostrar emoción.",
       "fragmento": "la cámara avanza lentamente hacia el personaje (dolly in), pasando de plano medio a primer plano",
       "prompt": "Video en estilo {estilo}. En {escenario}, está {personaje} mientras {accion:abre una pequeña caja luminosa y mira su interior con asombro}. Comando de cámara: la cámara avanza lentamente en línea recta hacia el rostro del personaje (dolly in cinematográfico), empezando en un plano medio y terminando en un primer plano lleno de emoción, con el fondo suavemente desenfocado. Audio: {audio}.",
       "etiquetas": [
@@ -270,7 +270,7 @@ window.BIBLIOTECA = {
       "anim": "dolly-out",
       "comando": "Dolly Out (Alejamiento)",
       "titulo": "Alejarse revelando el lugar (Dolly Out)",
-      "descripcion": "La c?mara retrocede desde el personaje para revelar todo el mundo.",
+      "descripcion": "La cámara retrocede desde el personaje para revelar todo el mundo.",
       "fragmento": "la cámara retrocede lentamente alejándose del personaje para revelar todo el escenario (dolly out)",
       "prompt": "Video en estilo {estilo}. Empezamos muy cerca de {personaje}, que {accion:mira el horizonte con una sonrisa valiente}. Comando de cámara: la cámara retrocede suavemente hacia atrás (dolly out continuo) revelando poco a poco toda la inmensidad de {escenario} alrededor del personaje. Luz espectacular y atmósfera épica. Audio: {audio}.",
       "etiquetas": [
@@ -292,7 +292,7 @@ window.BIBLIOTECA = {
       "anim": "orbita",
       "comando": "Orbit 360° (Giro alrededor)",
       "titulo": "Girar alrededor como un héroe (Órbita 360°)",
-      "descripcion": "La c?mara gira en c?rculo completo alrededor del personaje como un h?roe.",
+      "descripcion": "La cámara gira en círculo completo alrededor del personaje como un héroe.",
       "fragmento": "la cámara gira en un círculo suave alrededor del personaje (órbita de 360 grados)",
       "prompt": "Video épico en estilo {estilo}. En el centro de {escenario} se encuentra {personaje} mientras {accion:activa un artefacto brillante que flota entre sus manos}. Comando de cámara: la cámara gira en un movimiento circular continuo de 360 grados alrededor del personaje (orbit shot), manteniendo al personaje siempre en el centro del encuadre mientras el fondo gira detrás. Audio: {audio}.",
       "etiquetas": [
@@ -313,7 +313,7 @@ window.BIBLIOTECA = {
       "anim": "tracking",
       "comando": "Tracking Shot (Seguimiento)",
       "titulo": "Seguir al personaje en movimiento (Tracking)",
-      "descripcion": "La c?mara camina o corre junto al personaje sin perderle el paso.",
+      "descripcion": "La cámara camina o corre junto al personaje sin perderle el paso.",
       "fragmento": "la cámara sigue al personaje en movimiento manteniendo la misma distancia (tracking shot)",
       "prompt": "Video en estilo {estilo}. {personaje} {accion:avanza con paso decidido explorando el camino} a través de {escenario}. Comando de cámara: cámara de seguimiento (tracking shot) que se mueve {direccion|detrás del personaje acompañando sus pasos|delante del personaje retrocediendo al mismo ritmo que camina}, manteniendo el encuadre estable y fluido. Audio: {audio}.",
       "etiquetas": [
@@ -335,7 +335,7 @@ window.BIBLIOTECA = {
       "anim": "truck",
       "comando": "Truck / Travelling Lateral",
       "titulo": "Deslizarse de lado (Travelling lateral)",
-      "descripcion": "La c?mara se desliza de costado acompa?ando al personaje de perfil.",
+      "descripcion": "La cámara se desliza de costado acompañando al personaje de perfil.",
       "fragmento": "travelling lateral suave deslizándose en paralelo junto al personaje de perfil",
       "prompt": "Video en estilo {estilo}. Vemos de perfil a {personaje} mientras {accion:camina observando las maravillas del lugar} por {escenario}. Comando de cámara: travelling lateral (truck shot) donde la cámara se desliza horizontalmente de izquierda a derecha exactamente a la misma velocidad que el personaje, con objetos en primer plano pasando desenfocados para dar sensación de profundidad. Audio: {audio}.",
       "etiquetas": [
@@ -356,7 +356,7 @@ window.BIBLIOTECA = {
       "anim": "pan",
       "comando": "Pan (Paneo horizontal)",
       "titulo": "Girar la cabeza a un lado (Paneo / Pan)",
-      "descripcion": "La c?mara gira de izquierda a derecha desde su lugar sin caminar.",
+      "descripcion": "La cámara gira de izquierda a derecha desde su lugar sin caminar.",
       "fragmento": "paneo horizontal suave de izquierda a derecha mostrando el escenario (camera pan)",
       "prompt": "Video en estilo {estilo}. La escena comienza mostrando {escenario} en calma y, mediante un comando de cámara de paneo horizontal lento de izquierda a derecha (camera pan sobre trípode fijo), descubre al otro lado a {personaje} que {accion:saluda sorprendido al ser descubierto}. Audio: {audio}.",
       "etiquetas": [
@@ -372,7 +372,7 @@ window.BIBLIOTECA = {
       "anim": "tilt",
       "comando": "Tilt Up (Inclinación vertical)",
       "titulo": "Mirar de abajo hacia arriba (Tilt Up)",
-      "descripcion": "La c?mara sube la mirada desde el suelo hasta lo m?s alto del lugar.",
+      "descripcion": "La cámara sube la mirada desde el suelo hasta lo más alto del lugar.",
       "fragmento": "la cámara se inclina lentamente de abajo hacia arriba revelando la altura (tilt up)",
       "prompt": "Video en estilo {estilo} en {escenario}. Empezamos viendo los pies de {personaje} junto a {estructura:una torre de cristal gigantesca que llega hasta las nubes}. Comando de cámara: la cámara se inclina suavemente de abajo hacia arriba (tilt up vertical) recorriendo toda la altura hasta revelar la cima brillante en el cielo. Audio: {audio}.",
       "etiquetas": [
@@ -393,7 +393,7 @@ window.BIBLIOTECA = {
       "anim": "dron",
       "comando": "Drone Aerial Shot (Vista de Dron)",
       "titulo": "Vuelo de dron por el cielo (Aerial Shot)",
-      "descripcion": "La c?mara vuela alto como un dron para mostrar paisajes desde el cielo.",
+      "descripcion": "La cámara vuela alto como un dron para mostrar paisajes desde el cielo.",
       "fragmento": "toma aérea de dron volando suavemente desde las alturas sobre el escenario",
       "prompt": "Espectacular toma aérea en estilo {estilo}. Comando de cámara: vista de dron (aerial drone shot) volando suavemente por encima de {escenario}, descendiendo poco a poco hasta mostrar a {personaje} que {accion:corre por un sendero saludando hacia el cielo}. Luz hermosa y gran sensación de altura. Audio: {audio}.",
       "etiquetas": [
@@ -415,7 +415,7 @@ window.BIBLIOTECA = {
       "anim": "grua",
       "comando": "Crane Shot (Cámara Grúa)",
       "titulo": "Subir como una grúa de cine (Crane Shot)",
-      "descripcion": "La c?mara sube desde el suelo hacia el cielo mostrando todo el lugar.",
+      "descripcion": "La cámara sube desde el suelo hacia el cielo mostrando todo el lugar.",
       "fragmento": "movimiento de grúa que se eleva desde el nivel del suelo hasta una vista alta (crane up)",
       "prompt": "Video cinematográfico en estilo {estilo}. A nivel del suelo en {escenario}, vemos a {personaje} que {accion:termina su misión y mira hacia el horizonte}. Comando de cámara: toma de grúa (crane shot) que empieza a la altura del personaje y se eleva suavemente hacia el cielo mostrando todo el paisaje iluminado. Audio: {audio}.",
       "etiquetas": [
@@ -436,7 +436,7 @@ window.BIBLIOTECA = {
       "anim": "fpv",
       "comando": "FPV Drone (Vuelo acrobático)",
       "titulo": "Dron veloz entre obstáculos (FPV)",
-      "descripcion": "Vuelo r?pido y emocionante entre obst?culos como si fueras un p?jaro.",
+      "descripcion": "Vuelo rápido y emocionante entre obstáculos como si fueras un pájaro.",
       "fragmento": "vuelo ágil de dron FPV atravesando el escenario con giros suaves y dinámicos",
       "prompt": "Video trepidante en estilo {estilo}. Comando de cámara: vuelo de dron FPV en primera persona que avanza velozmente esquivando elementos de {escenario} hasta llegar junto a {personaje}, quien {accion:vuela sobre una patineta flotante siguiendo el ritmo}. Sensación de velocidad e inmersión total. Audio: {audio}.",
       "etiquetas": [
@@ -452,7 +452,7 @@ window.BIBLIOTECA = {
       "anim": "low-angle",
       "comando": "Low Angle (Contrapicado heroico)",
       "titulo": "Desde abajo como un superhéroe (Contrapicado)",
-      "descripcion": "La c?mara mira desde el suelo hacia arriba para dar aspecto heroico.",
+      "descripcion": "La cámara mira desde el suelo hacia arriba para dar aspecto heroico.",
       "fragmento": "ángulo contrapicado desde abajo mirando hacia arriba (low angle hero shot) haciendo ver poderoso al personaje",
       "prompt": "Video en estilo {estilo} ambientado en {escenario}. Comando de cámara: toma en ángulo contrapicado muy bajo (low angle hero shot) mirando hacia arriba a {personaje}, que {accion:se pone su capa ondeante al viento con pose de superhéroe} recortado contra el cielo brillante. Audio: {audio}.",
       "etiquetas": [
@@ -473,7 +473,7 @@ window.BIBLIOTECA = {
       "anim": "high-angle",
       "comando": "High Angle (Picado desde arriba)",
       "titulo": "Desde arriba mirando hacia abajo (Picado)",
-      "descripcion": "La c?mara mira desde arriba hacia el suelo haciendo ver todo peque?o.",
+      "descripcion": "La cámara mira desde arriba hacia el suelo haciendo ver todo pequeño.",
       "fragmento": "ángulo picado desde arriba mirando hacia abajo al personaje (high angle shot)",
       "prompt": "Video en estilo {estilo}. Comando de cámara: ángulo picado alto (high angle) mirando desde arriba hacia el centro de {escenario}, donde un pequeño {personaje} {accion:levanta la vista hacia arriba sorprendido mientras caen hojas brillantes a su alrededor}. Audio: {audio}.",
       "etiquetas": [
@@ -557,7 +557,7 @@ window.BIBLIOTECA = {
       "anim": "macro",
       "comando": "Macro Extreme Close-Up (Plano detalle)",
       "titulo": "Súper lupa de cosas diminutas (Plano Detalle / Macro)",
-      "descripcion": "S?per lupa para ver cosas diminutas (gotas, insectos) bien gigantes.",
+      "descripcion": "Súper lupa para ver cosas diminutas (gotas, insectos) bien gigantes.",
       "fragmento": "plano detalle macro extremo (extreme close-up) con enfoque ultra nítido en el objeto pequeño y fondo borroso",
       "prompt": "Video fascinante en estilo {estilo} en {escenario}. Comando de cámara: lente macro de plano detalle extremo (extreme close-up) mostrando muy de cerca {detalle_pequeno:una gota de rocío sobre una hoja brillante donde se refleja todo el bosque}, mientras {accion:una pequeña mariquita camina despacio junto a la gota}. Fondo totalmente desenfocado. Audio: {audio}.",
       "etiquetas": [
@@ -578,7 +578,7 @@ window.BIBLIOTECA = {
       "anim": "static",
       "comando": "Static Tripod Shot (Cámara fija)",
       "titulo": "Cámara quieta en trípode (Cámara fija)",
-      "descripcion": "La c?mara queda quieta en su tr?pode mientras ocurre toda la acci?n.",
+      "descripcion": "La cámara queda quieta en su trípode mientras ocurre toda la acción.",
       "fragmento": "cámara totalmente fija sobre un trípode estable, encuadre inmóvil",
       "prompt": "Video en estilo {estilo}. Comando de cámara: cámara totalmente fija sobre trípode (static shot) encuadrando {escenario}. Dentro del cuadro inmóvil, {personaje} entra por un lado, {accion:hace un truco divertido en el centro haciendo malabares con esferas de luz} y saluda antes de salir. Audio: {audio}.",
       "etiquetas": [
@@ -599,7 +599,7 @@ window.BIBLIOTECA = {
       "anim": "handheld",
       "comando": "Handheld Camera (Cámara en mano)",
       "titulo": "Cámara en mano con movimiento real (Handheld)",
-      "descripcion": "Movimiento natural de c?mara en mano para sentirte dentro de la acci?n.",
+      "descripcion": "Movimiento natural de cámara en mano para sentirte dentro de la acción.",
       "fragmento": "cámara en mano con movimiento natural y orgánico siguiendo la acción de cerca",
       "prompt": "Video dinámico en estilo {estilo} en {escenario}. Comando de cámara: grabación cámara en mano (handheld camera) con un pulso natural que acompaña de cerca a {personaje} mientras {accion:esquiva géiseres de vapor y celebra haber llegado a la meta}. Audio: {audio}.",
       "etiquetas": [
@@ -642,7 +642,7 @@ window.BIBLIOTECA = {
       "anim": "timelapse",
       "comando": "Time-Lapse (Cámara rápida)",
       "titulo": "El tiempo pasa volando (Time-Lapse)",
-      "descripcion": "Horas en pocos segundos: nubes corriendo o el d?a haci?ndose noche.",
+      "descripcion": "Horas en pocos segundos: nubes corriendo o el día haciéndose noche.",
       "fragmento": "time-lapse acelerado con cámara fija donde las nubes y la luz avanzan rápidamente",
       "prompt": "Video en estilo {estilo} mostrando {escenario}. Comando de cámara: time-lapse con cámara fija donde el tiempo avanza rápidamente pasando del día soleado al atardecer naranja y la noche estrellada en pocos segundos, mientras {proceso:las flores gigantes del lugar se abren y empiezan a brillar en la oscuridad}. Audio: {audio}.",
       "etiquetas": [
@@ -687,7 +687,7 @@ window.BIBLIOTECA = {
       "anim": "flythrough",
       "comando": "Flythrough (Vuelo atravesando el lugar)",
       "titulo": "Vuelo atravesando el escenario (Flythrough)",
-      "descripcion": "La c?mara vuela hacia adelante atravesando puertas, arcos o ?rboles.",
+      "descripcion": "La cámara vuela hacia adelante atravesando puertas, arcos o árboles.",
       "fragmento": "movimiento de vuelo continuo atravesando el escenario por dentro (camera flythrough)",
       "prompt": "Video inmersivo en estilo {estilo}. Comando de cámara: vuelo continuo atravesando el escenario (flythrough shot) donde la cámara avanza flotando suavemente por el interior de {escenario}, pasando bajo arcos y detalles hasta encontrar a {personaje} que {accion:trabaja concentrado en su mesa de aventuras}. Audio: {audio}.",
       "etiquetas": [
@@ -703,7 +703,7 @@ window.BIBLIOTECA = {
       "anim": "zoom",
       "comando": "Optical Zoom (Zoom de lente)",
       "titulo": "Zoom de lente rápido o suave (Optical Zoom)",
-      "descripcion": "La c?mara no camina, pero el lente acerca o aleja r?pido la imagen.",
+      "descripcion": "La cámara no camina, pero el lente acerca o aleja rápido la imagen.",
       "fragmento": "zoom óptico de lente acercándose directamente al objetivo sin mover la posición de la cámara",
       "prompt": "Video en estilo {estilo} en {escenario}. Comando de cámara: zoom óptico de lente ({tipo_zoom|zoom in suave acercándose al rostro|zoom in rápido de sorpresa estilo comedia|zoom out óptico abriendo el encuadre}) enfocado en {personaje} justo cuando {accion:se da cuenta de una pista secreta y abre grandes los ojos}. Audio: {audio}.",
       "etiquetas": [
@@ -720,7 +720,7 @@ window.BIBLIOTECA = {
       "anim": "wideangle",
       "comando": "Ultra Wide-Angle Lens (Gran Angular)",
       "titulo": "Lente Gran Angular / Ojo de Pez (Wide-Angle)",
-      "descripcion": "Lente s?per amplio donde cabe todo el lugar y lo cercano se ve enorme.",
+      "descripcion": "Lente súper amplio donde cabe todo el lugar y lo cercano se ve enorme.",
       "fragmento": "filmado con lente ultra gran angular (14mm wide-angle lens) con amplio campo de visión y perspectiva profunda",
       "prompt": "Video llamativo en estilo {estilo} dentro de {escenario}. Comando de cámara: lente ultra gran angular (wide-angle lens de amplio campo de visión) muy cerca de {personaje}, quien {accion:se asoma curioso hacia la lente haciendo una cara divertida} mientras se ve todo el escenario gigante detrás. Audio: {audio}.",
       "etiquetas": [
@@ -753,7 +753,7 @@ window.BIBLIOTECA = {
       "anim": "hyperlapse",
       "comando": "Hyperlapse (Cámara rápida en movimiento)",
       "titulo": "Tiempo rápido mientras la cámara avanza (Hyperlapse)",
-      "descripcion": "El tiempo pasa s?per r?pido mientras la c?mara avanza por el camino.",
+      "descripcion": "El tiempo pasa súper rápido mientras la cámara avanza por el camino.",
       "fragmento": "hyperlapse dinámico con el tiempo acelerado mientras la cámara avanza de forma fluida por el escenario",
       "prompt": "Video vibrante en estilo {estilo}. Comando de cámara: hyperlapse en movimiento donde la cámara avanza recorriendo {escenario} a gran velocidad mientras las nubes, las luces y el entorno se mueven acelerados alrededor de {personaje}, que {accion:camina decidido hacia su destino}. Audio: {audio}.",
       "etiquetas": [
@@ -807,7 +807,7 @@ window.BIBLIOTECA = {
       "categoria": "imagen",
       "icono": "🖍️",
       "titulo": "Lámina para imprimir y colorear",
-      "descripcion": "Dibujo en blanco y negro de l?neas limpias listo para pintar en clase.",
+      "descripcion": "Dibujo en blanco y negro de líneas limpias listo para pintar en clase.",
       "prompt": "Página de libro para colorear para niños, únicamente líneas negras limpias y bien definidas sobre fondo totalmente blanco puro, sin sombras grises ni rellenos de color. Escena: {tema:un astronauta simpático jugando al fútbol en la Luna con un pequeño extraterrestre}. Trazo claro e infantil.",
       "etiquetas": [
         "arte",
@@ -846,7 +846,7 @@ window.BIBLIOTECA = {
       "categoria": "imagen",
       "icono": "🔩",
       "titulo": "Infografía de Piezas Separadas (Exploded View)",
-      "descripcion": "Muestra una m?quina desarmada flotando en el aire con todas sus piezas.",
+      "descripcion": "Muestra una máquina desarmada flotando en el aire con todas sus piezas.",
       "prompt": "Ilustración técnica de vista explosiva (exploded view / teardown) en estilo {estilo} de {objeto_tecnico:una patineta voladora solar}. El objeto se muestra con todas sus piezas, engranajes y partes internas separadas flotando ordenadamente en el aire sobre un fondo limpio, ideal para infografía escolar.",
       "etiquetas": [
         "ciencias",
@@ -889,7 +889,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🌸",
       "titulo": "Anime / Estudio Ghibli",
-      "descripcion": "Dibujo animado japon?s con cielos preciosos y fondos pintados a mano.",
+      "descripcion": "Dibujo animado japonés con cielos preciosos y fondos pintados a mano.",
       "fragmento": "animación japonesa tradicional estilo Studio Ghibli con fondos pintados a mano y colores cálidos",
       "prompt": "animación japonesa tradicional estilo Studio Ghibli con fondos pintados a mano y colores cálidos",
       "etiquetas": [
@@ -904,7 +904,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "✏️",
       "titulo": "Caricatura 2D colorida",
-      "descripcion": "Como las series animadas de televisi?n, con l?neas limpias y alegres.",
+      "descripcion": "Como las series animadas de televisión, con líneas limpias y alegres.",
       "fragmento": "dibujo animado 2D moderno de líneas limpias, colores planos vibrantes y animación expresiva",
       "prompt": "dibujo animado 2D moderno de líneas limpias, colores planos vibrantes y animación expresiva",
       "etiquetas": [
@@ -934,7 +934,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🧱",
       "titulo": "Bloques de construcción",
-      "descripcion": "Todo el mundo y los personajes est?n hechos con bloques de pl?stico.",
+      "descripcion": "Todo el mundo y los personajes están hechos con bloques de plástico.",
       "fragmento": "animación hecha completamente con bloques y minifiguras de construcción de plástico brillante",
       "prompt": "animación hecha completamente con bloques y minifiguras de construcción de plástico brillante",
       "etiquetas": [
@@ -949,7 +949,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "👾",
       "titulo": "Videojuego Retro / Voxel 3D",
-      "descripcion": "Est?tica de videojuego cl?sico armado con cubos y p?xeles coloridos.",
+      "descripcion": "Estética de videojuego clásico armado con cubos y píxeles coloridos.",
       "fragmento": "estética de videojuego voxel 3D colorido con iluminación moderna y texturas pixeladas",
       "prompt": "estética de videojuego voxel 3D colorido con iluminación moderna y texturas pixeladas",
       "etiquetas": [
@@ -963,7 +963,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🎞️",
       "titulo": "Cine realista (Live Action)",
-      "descripcion": "Se ve como una pel?cula real grabada con c?maras de cine en alta definici?n.",
+      "descripcion": "Se ve como una película real grabada con cámaras de cine en alta definición.",
       "fragmento": "imagen cinematográfica hiperrealista en 4K, iluminación natural de película y texturas reales",
       "prompt": "imagen cinematográfica hiperrealista en 4K, iluminación natural de película y texturas reales",
       "etiquetas": [
@@ -978,7 +978,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🖌️",
       "titulo": "Cuento en acuarela",
-      "descripcion": "Ilustraci?n suave pintada en acuarela sobre papel con textura art?stica.",
+      "descripcion": "Ilustración suave pintada en acuarela sobre papel con textura artística.",
       "fragmento": "ilustración animada en acuarela sobre papel texturizado, trazos suaves y colores pastel luminosos",
       "prompt": "ilustración animada en acuarela sobre papel texturizado, trazos suaves y colores pastel luminosos",
       "etiquetas": [
@@ -1007,7 +1007,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🌅",
       "titulo": "Hora Dorada del Atardecer (Golden Hour)",
-      "descripcion": "Luz c?lida y dorada del atardecer con sombras largas y destellos suaves.",
+      "descripcion": "Luz cálida y dorada del atardecer con sombras largas y destellos suaves.",
       "fragmento": "iluminación de hora dorada (golden hour) con luz solar cálida y suave de atardecer y rayos volumétricos dorados",
       "prompt": "iluminación de hora dorada (golden hour) con luz solar cálida y suave de atardecer y rayos volumétricos dorados",
       "etiquetas": [
@@ -1082,7 +1082,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🍁",
       "titulo": "Colores y Hojas de Otoño (Autumn)",
-      "descripcion": "Tonos naranjas, rojos y dorados con hojas de oto?o volando en la brisa.",
+      "descripcion": "Tonos naranjas, rojos y dorados con hojas de otoño volando en la brisa.",
       "fragmento": "estética cálida de otoño (autumn colors) con árboles y hojas doradas, naranjas y rojizas flotando en el viento",
       "prompt": "estética cálida de otoño (autumn colors) con árboles y hojas doradas, naranjas y rojizas flotando en el viento",
       "etiquetas": [
@@ -1097,7 +1097,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "📽️",
       "titulo": "Película Analógica Retro (VintageFilm)",
-      "descripcion": "Colores nost?lgicos y textura cl?sica de rollo de cine antiguo de 35mm.",
+      "descripcion": "Colores nostálgicos y textura clásica de rollo de cine antiguo de 35mm.",
       "fragmento": "estética de película analógica retro en 35mm (vintage film look) con colores cálidos nostálgicos y grano suave de cine clásico",
       "prompt": "estética de película analógica retro en 35mm (vintage film look) con colores cálidos nostálgicos y grano suave de cine clásico",
       "etiquetas": [
@@ -1112,7 +1112,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "💡",
       "titulo": "Iluminación de Estudio Profesional (StudioPro)",
-      "descripcion": "Luz limpia y pareja como en un set de fotograf?a o televisi?n.",
+      "descripcion": "Luz limpia y pareja como en un set de fotografía o televisión.",
       "fragmento": "iluminación profesional de estudio a tres puntos (studio pro lighting), colores puros, sombras suaves y máxima nitidez",
       "prompt": "iluminación profesional de estudio a tres puntos (studio pro lighting), colores puros, sombras suaves y máxima nitidez",
       "etiquetas": [
@@ -1127,7 +1127,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🏛️",
       "titulo": "Clásico Elegante de Época (Classic / OldMoney)",
-      "descripcion": "Estilo cl?sico, refinado y elegante como de pel?cula hist?rica.",
+      "descripcion": "Estilo clásico, refinado y elegante como de película histórica.",
       "fragmento": "estética clásica, tradicional y elegante (classic timeless style) con tonos cálidos sobrios, madera y luz natural suave",
       "prompt": "estética clásica, tradicional y elegante (classic timeless style) con tonos cálidos sobrios, madera y luz natural suave",
       "etiquetas": [
@@ -1142,7 +1142,7 @@ window.BIBLIOTECA = {
       "categoria": "estilo",
       "icono": "🌗",
       "titulo": "Doble Exposición Artística (DoubleExposure)",
-      "descripcion": "Dentro de la silueta del personaje se mezcla un paisaje de forma art?stica.",
+      "descripcion": "Dentro de la silueta del personaje se mezcla un paisaje de forma artística.",
       "fragmento": "efecto visual artístico de doble exposición (double exposure) donde la silueta del personaje se fusiona suavemente con el paisaje en su interior",
       "prompt": "efecto visual artístico de doble exposición (double exposure) donde la silueta del personaje se fusiona suavemente con el paisaje en su interior",
       "etiquetas": [
@@ -1270,14 +1270,15 @@ window.BIBLIOTECA = {
       "categoria": "escenario",
       "icono": "🍄",
       "titulo": "Bosque bioluminiscente",
-      "descripcion": "?rboles gigantes, hongos que brillan en azul y luci?rnagas doradas.",
+      "descripcion": "Árboles gigantes, hongos que brillan en azul y luciérnagas doradas.",
       "fragmento": "un bosque mágico con árboles gigantes, hongos bioluminiscentes que brillan en azul y turquesa, rayos de sol entre las ramas y luciérnagas flotando",
       "prompt": "un bosque mágico con árboles gigantes, hongos bioluminiscentes que brillan en azul y turquesa, rayos de sol entre las ramas y luciérnagas flotando",
       "etiquetas": [
         "fantasía",
         "naturaleza"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Bosque_bioluminiscente_f2b6e5c1.jpg"
     },
     {
       "id": "esc-ciudad-futuro",
@@ -1290,21 +1291,23 @@ window.BIBLIOTECA = {
       "etiquetas": [
         "ciencia ficción"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Ecociudad_del_futuro_212182b2.jpg"
     },
     {
       "id": "esc-espacio",
       "categoria": "escenario",
       "icono": "🌕",
       "titulo": "Base en la Luna",
-      "descripcion": "Cr?teres plateados, domos espaciales y la Tierra brillando en el cielo.",
+      "descripcion": "Cráteres plateados, domos espaciales y la Tierra brillando en el cielo.",
       "fragmento": "la superficie plateada de la Luna junto a una estación espacial con domos iluminados, con el planeta Tierra azul brillando enorme en el cielo estrellado",
       "prompt": "la superficie plateada de la Luna junto a una estación espacial con domos iluminados, con el planeta Tierra azul brillando enorme en el cielo estrellado",
       "etiquetas": [
         "espacio",
         "ciencias"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Base_en_la_Luna_a2a63a04.jpg"
     },
     {
       "id": "esc-oceano",
@@ -1318,7 +1321,8 @@ window.BIBLIOTECA = {
         "naturaleza",
         "ciencias"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Arrecife_submarino_de_coral_3cde9bf9.jpg"
     },
     {
       "id": "esc-laboratorio",
@@ -1332,7 +1336,8 @@ window.BIBLIOTECA = {
         "ciencias",
         "colegio"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Taller_de_inventos_49c92f88.jpg"
     },
     {
       "id": "esc-templo",
@@ -1346,7 +1351,8 @@ window.BIBLIOTECA = {
         "aventura",
         "historia"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Ruinas_antiguas_en_la_selva_9570764a.jpg"
     },
     {
       "id": "esc-volcan",
@@ -1360,7 +1366,8 @@ window.BIBLIOTECA = {
         "naturaleza",
         "ciencias"
       ],
-      "videos": []
+      "videos": [],
+      "imagen": "images/Isla_del_volcán_humeante_836193c0.jpg"
     },
     {
       "id": "aud-epico",

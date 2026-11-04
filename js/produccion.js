@@ -330,10 +330,12 @@ window.crearProduccion = function crearProduccion(api) {
   // ---------- Etapa 2: Escenario ----------
   function formEscenario() {
     const e = prod.escenario;
+    const escItem = itemById(e.baseId);
     return `
       ${chipEstilo()}
       ${bloque(1, '#00b4d8', '🏞️ ¿En qué lugar ocurre tu película? <small class="nota">Elige uno y cámbialo a tu gusto</small>',
         `${selectPiezas('escenario', 'escenario.baseId', e.baseId, true)}
+         ${escItem ? `<p class="pista-texto">💡 ${esc(escItem.descripcion)}</p>${miniaturaImagenHTML ? miniaturaImagenHTML(escItem) : ''}` : ''}
          <textarea class="input-grande" rows="3" data-campo="escenario.descripcion" placeholder="Ej: una biblioteca gigante con libros que vuelan">${esc(e.descripcion)}</textarea>`)}
       ${bloque(2, '#00b4d8', '☀️ ¿A qué hora del día?', pills('escenario.hora', HORAS, e.hora))}
       ${bloque(3, '#00b4d8', '🌦️ ¿Cómo está el clima?', pills('escenario.clima', CLIMAS, e.clima))}

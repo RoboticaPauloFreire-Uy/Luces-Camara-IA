@@ -108,7 +108,7 @@
       const origIt = origMap.get(it.id);
       it.icono = it.icono || (catById(it.categoria, d)?.emoji || '🎬');
       it.imagen = it.imagen || (origIt?.imagen || '');
-      if (origIt?.descripcion && (!it.descripcion || it.descripcion.length > 78)) {
+      if (origIt?.descripcion && (!it.descripcion || it.descripcion.length > 78 || it.descripcion.includes('?'))) {
         it.descripcion = origIt.descripcion;
       }
       it.etiquetas = Array.isArray(it.etiquetas) ? it.etiquetas : [];
