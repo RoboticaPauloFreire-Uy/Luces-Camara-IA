@@ -830,19 +830,12 @@
               </button>
             </div>
 
-            <div class="selector-bar">
-              <select class="select-grande" data-key="${esc(v.key)}" data-tipo="biblio" aria-label="${esc(pregunta)}">
-                ${opciones.map((op) => `<option value="${esc(op.id)}" ${val.itemId === op.id ? 'selected' : ''}>${esc(op.icono || cat.emoji)} ${esc(op.titulo)}</option>`).join('')}
-                <option value="__otro__" ${val.otro ? 'selected' : ''}>✏️ Escribir mi propia idea…</option>
-              </select>
-            </div>
-
             ${val.otro ? `
               <input type="text" class="input-grande" data-key="${esc(v.key)}" data-tipo="texto" value="${esc(val.text || '')}" placeholder="Escribe aquí tu propia versión…">
             ` : selItem ? `
-              <div class="pista-seleccion">
+              <div class="pista-seleccion pista-seleccion--clic" data-abrir-selector="${esc(v.key)}" data-cat="${esc(v.cat)}" role="button" tabindex="0" title="Haz clic para cambiar de tarjeta">
                 <span class="pista-seleccion__icono">${esc(selItem.icono || cat.emoji)}</span>
-                <div>
+                <div class="pista-seleccion__info">
                   <strong>${esc(selItem.titulo)}</strong>
                   <p>${esc(selItem.descripcion)}</p>
                 </div>
@@ -915,6 +908,7 @@
     $('#selector-sub').textContent = 'Haz clic en la imagen o video para verlo en grande, o haz clic en la tarjeta para elegirla:';
 
     const actualId = state.vals[key]?.itemId;
+    const esOtro = !!state.vals[key]?.otro;
     $('#selector-grilla').innerHTML = items.map((it) => `
       <div class="card-pieza-sel ${it.id === actualId ? 'activa' : ''}" role="button" tabindex="0" data-elegir-pieza="${esc(it.id)}" style="--c:${esc(cat?.color || '#4c6ef5')}">
         <div class="card-pieza-sel__top">
@@ -928,7 +922,17 @@
         ${it.imagen ? miniaturaImagenHTML(it) : ''}
         ${it.anim ? svgCamara(it.anim, it) : ''}
       </div>
-    `).join('');
+    `).join('') + `
+      <div class="card-pieza-sel ${esOtro ? 'activa' : ''}" role="button" tabindex="0" data-elegir-pieza="__otro__" style="--c:${esc(cat?.color || '#4c6ef5')}">
+        <div class="card-pieza-sel__top">
+          <span class="card-pieza-sel__icono">✏️</span>
+          <div>
+            <strong>Escribir mi propia idea…</strong>
+          </div>
+        </div>
+        <p>Inventa y escribe con tus propias palabras esta parte de la escena.</p>
+      </div>
+    `;
 
     $('#dlg-selector').showModal();
   }
@@ -1288,7 +1292,12 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
     if (e.target.closest('[data-ver-img], [data-modal-yt]')) return;
     const card = e.target.closest('[data-elegir-pieza]');
     if (!card || !selectorContexto) return;
-    state.vals[selectorContexto.key] = { itemId: card.dataset.elegirPieza };
+    const val = card.dataset.elegirPieza;
+    if (val === '__otro__') {
+      state.vals[selectorContexto.key] = { otro: true, text: '' };
+    } else {
+      state.vals[selectorContexto.key] = { itemId: val };
+    }
     $('#dlg-selector').close();
     renderFormularioVariables(itemById(state.activaId));
     actualizarVistaPrevia();

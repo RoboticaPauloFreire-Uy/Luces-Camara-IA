@@ -828,7 +828,19 @@ body.es-profe .solo-profe {
   background: #fff;
   border: 2px dashed #94a3b8;
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 10px 14px;
+}
+
+.pista-seleccion--clic {
+  cursor: pointer;
+  border: 2.5px solid var(--borde);
+  box-shadow: 0 3px 0 var(--borde);
+  transition: transform 0.12s, background 0.15s;
+}
+
+.pista-seleccion--clic:hover {
+  background: #fef9c3;
+  transform: translateY(-1px);
 }
 
 .pista-seleccion__icono {
