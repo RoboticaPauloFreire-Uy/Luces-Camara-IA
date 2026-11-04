@@ -363,7 +363,12 @@ window.BIBLIOTECA = {
         "movimiento",
         "básico"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/BHo3qByTzrc",
+          "titulo": "Girar la cabeza a un lado (Paneo / Pan)"
+        }
+      ]
     },
     {
       "id": "cam-tilt",
@@ -694,7 +699,12 @@ window.BIBLIOTECA = {
         "movimiento",
         "aventura"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/JYP4wZf4FR0",
+          "titulo": "Vuelo atravesando el escenario (Flythrough)"
+        }
+      ]
     },
     {
       "id": "cam-zoom",
@@ -711,7 +721,12 @@ window.BIBLIOTECA = {
         "efectos",
         "básico"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/cyzHgYAeWuo",
+          "titulo": "Zoom de lente rápido o suave (Optical Zoom)"
+        }
+      ]
     },
     {
       "id": "cam-wideangle",
@@ -728,7 +743,12 @@ window.BIBLIOTECA = {
         "lentes",
         "humor"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/gnxeWSCyNGU",
+          "titulo": "Lente Gran Angular / Ojo de Pez (Wide-Angle)"
+        }
+      ]
     },
     {
       "id": "cam-cenital",
@@ -744,7 +764,12 @@ window.BIBLIOTECA = {
         "ángulos",
         "planos"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/6XvrpCDApNM",
+          "titulo": "Vista recta desde el techo (Plano Cenital / Overhead)"
+        }
+      ]
     },
     {
       "id": "cam-hyperlapse",
