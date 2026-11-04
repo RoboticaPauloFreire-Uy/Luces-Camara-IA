@@ -448,7 +448,12 @@ window.BIBLIOTECA = {
         "movimiento",
         "acción"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/6ColOOQHysY",
+          "titulo": "Dron veloz entre obstáculos (FPV)"
+        }
+      ]
     },
     {
       "id": "cam-contrapicado",
@@ -785,7 +790,12 @@ window.BIBLIOTECA = {
         "movimiento",
         "efectos"
       ],
-      "videos": []
+      "videos": [
+        {
+          "url": "https://youtu.be/BSgUAvR6s0g",
+          "titulo": "Tiempo rápido mientras la cámara avanza (Hyperlapse)"
+        }
+      ]
     },
     {
       "id": "img-portada",
