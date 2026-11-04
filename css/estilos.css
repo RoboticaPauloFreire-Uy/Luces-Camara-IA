@@ -683,35 +683,6 @@ body.es-profe .solo-profe {
   width: 100%;
   border-radius: 10px;
   overflow: hidden;
-  transition: aspect-ratio 0.2s;
-}
-
-.diagrama-camara.reproduciendo-yt .diagrama-camara__visor {
-  aspect-ratio: 16 / 9;
-  background: #000;
-}
-
-.diagrama-camara.reproduciendo-yt .cam-svg {
-  opacity: 0;
-  height: 0;
-}
-
-.diagrama-camara__yt-slot {
-  position: absolute;
-  inset: 0;
-  display: none;
-  background: #000;
-}
-
-.reproduciendo-yt .diagrama-camara__yt-slot {
-  display: block;
-}
-
-.yt-hover-iframe {
-  width: 100%;
-  height: 100%;
-  border: none;
-  display: block;
 }
 
 .cam-svg {

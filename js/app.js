@@ -1223,8 +1223,13 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
   $('#lista-plantillas').addEventListener('click', (e) => {
     const fav = e.target.closest('[data-fav]');
     if (fav) { e.stopPropagation(); alternarFav(fav.dataset.fav); return; }
+    const mediaBtn = e.target.closest('[data-ver-img], [data-modal-yt]');
     const item = e.target.closest('.item-plantilla');
-    if (item) seleccionarPlantilla(item.dataset.id, true);
+    if (item) seleccionarPlantilla(item.dataset.id, !mediaBtn);
+    if (mediaBtn) {
+      e.stopPropagation();
+      dispararModalDesdeElemento(mediaBtn);
+    }
   });
 
   // Formulario interactivo
