@@ -63,8 +63,9 @@ window.crearProduccion = function crearProduccion(api) {
     };
   }
 
-  function nuevaEscena() {
+  function nuevaEscena(acto = 'inicio') {
     return {
+      acto,
       modo: 'ingredientes',
       quien: '0',
       accion: '',
@@ -84,10 +85,11 @@ window.crearProduccion = function crearProduccion(api) {
         nudo: '',
         desenlace: ''
       },
+      customPrompts: {},
       estiloId: primero('estilo').id || '',
       personajes: [nuevoPersonaje(0)],
       escenario: nuevoEscenario(),
-      escenas: [nuevaEscena()],
+      escenas: [nuevaEscena('inicio')],
       etapa: 0,
       personajeActivo: 0,
       escenaActiva: 0,
@@ -108,6 +110,15 @@ window.crearProduccion = function crearProduccion(api) {
       desenlace: '',
       ...(p.anecdota || {})
     };
+    p.customPrompts = (p.customPrompts && typeof p.customPrompts === 'object') ? p.customPrompts : {};
+    p.escenas.forEach((s, idx) => {
+      if (!['inicio', 'nudo', 'desenlace'].includes(s.acto)) {
+        s.acto = idx === 0 ? 'inicio' : (idx === 1 ? 'nudo' : 'desenlace');
+      }
+      if (idx > 0 && s.modo === 'fotogramas' && !(s.accion || '').trim()) {
+        s.modo = 'ingredientes';
+      }
+    });
     return p;
   }
 
@@ -243,7 +254,21 @@ window.crearProduccion = function crearProduccion(api) {
   }
 
   // ---------- Piezas de UI reutilizables ----------
-  const salida = {}; // textos listos para copiar, por clave
+  const salida = {};      // textos finales listos para copiar, por clave
+  const salidaAuto = {};  // textos automáticos sin edición manual, por clave
+  const metaClaqueta = {}; // metadatos para abrir en el modal { clave, titulo, colorBoton }
+
+  function textoFinalDe(clave, textoAutomatico) {
+    salidaAuto[clave] = textoAutomatico;
+    const manual = (prod.customPrompts?.[clave] || '').trim();
+    const final = manual || textoAutomatico;
+    salida[clave] = final;
+    return final;
+  }
+
+  function tieneEdicionManual(clave) {
+    return !!((prod.customPrompts?.[clave] || '').trim());
+  }
 
   function selectPiezas(cat, campo, valorId, conPropio, etiquetaPropio = '✏️ Inventar desde cero') {
     return `<select class="select-grande" data-sel="${esc(campo)}" data-cat="${esc(cat)}">
@@ -269,17 +294,100 @@ window.crearProduccion = function crearProduccion(api) {
     </div>`;
   }
 
-  function claqueta(clave, titulo, texto, colorBoton = 'verde') {
-    salida[clave] = texto;
-    const html = esc(texto).replace(/\[([^\]]+)\]/g, '<mark class="var-vacia">[$1]</mark>');
-    return `<div class="claqueta-card">
+  function claqueta(clave, titulo, textoAutomatico, colorBoton = 'verde') {
+    const final = textoFinalDe(clave, textoAutomatico);
+    const editado = tieneEdicionManual(clave);
+    const faltaAccion = final.includes('[¿qué hace?]');
+    metaClaqueta[clave] = { clave, titulo, colorBoton };
+
+    return `<div class="claqueta-card claqueta-card--compacta">
       <div class="claqueta-card__franjas"></div>
       <div class="claqueta-card__cuerpo">
-        <div class="claqueta-card__top"><h2>${titulo}</h2></div>
-        <div class="vista-previa" data-salida="${esc(clave)}">${html}</div>
-        <button type="button" class="btn3d btn3d--gigante btn3d--${colorBoton}" data-copiar="${esc(clave)}">📋 ¡COPIAR PROMPT!</button>
+        <div class="claqueta-card__top">
+          <h2>${titulo}</h2>
+          ${editado
+            ? '<span class="estado-prompt estado-prompt--editado">✏️ Editado a mano</span>'
+            : (faltaAccion
+                ? '<span class="estado-prompt estado-prompt--falta">⚠️ Falta paso 3</span>'
+                : '<span class="estado-prompt estado-prompt--ok">✅ Prompt listo</span>')}
+        </div>
+        <p class="claqueta-card__resumen">Haz clic en <b>Ver Prompt</b> para abrir la claqueta completa, copiarlo o editarlo a mano si quieres agregar algo más.</p>
+        <div class="claqueta-card__botones">
+          <button type="button" class="btn3d btn3d--gigante btn3d--${colorBoton}" data-ver-prompt="${esc(clave)}">🎬 VER PROMPT</button>
+          <button type="button" class="btn3d btn3d--blanco" data-copiar="${esc(clave)}" title="Copiar directamente">📋 Copiar</button>
+        </div>
       </div>
     </div>`;
+  }
+
+  let modalPromptClaveActiva = null;
+  let modalPromptEditando = false;
+
+  function renderModalPrompt() {
+    const dlg = $('#dlg-prompt-prod');
+    const cuerpo = $('#modal-prompt-prod-cuerpo');
+    if (!dlg || !cuerpo || !modalPromptClaveActiva) return;
+
+    const meta = metaClaqueta[modalPromptClaveActiva] || {
+      clave: modalPromptClaveActiva,
+      titulo: '🎬 Tu Prompt Listo',
+      colorBoton: 'verde'
+    };
+    const clave = meta.clave;
+    const textoActual = salida[clave] || '';
+    const editado = tieneEdicionManual(clave);
+    const htmlVista = esc(textoActual).replace(/\[([^\]]+)\]/g, '<mark class="var-vacia">[$1]</mark>');
+
+    cuerpo.innerHTML = `
+      <div class="claqueta-card claqueta-card--modal">
+        <div class="claqueta-card__franjas"></div>
+        <div class="claqueta-card__cuerpo">
+          <div class="claqueta-card__top">
+            <div>
+              <span class="paso-pill">CLAQUETA DE PROMPT</span>
+              <h2>${meta.titulo}</h2>
+            </div>
+            <div class="claqueta-card__top-der">
+              ${editado ? '<span class="estado-prompt estado-prompt--editado">✏️ Editado a mano</span>' : '<span class="estado-prompt estado-prompt--ok">✅ Listo para copiar</span>'}
+              <button type="button" class="btn-cerrar" data-cerrar-modal-prompt aria-label="Cerrar">✕</button>
+            </div>
+          </div>
+
+          ${modalPromptEditando ? `
+            <div class="claqueta-editor">
+              <label class="claqueta-editor__label">✏️ Edita o agrega lo que quieras al prompt:</label>
+              <textarea id="textarea-prompt-manual" class="input-grande claqueta-editor__textarea" rows="6">${esc(textoActual)}</textarea>
+              <div class="claqueta-editor__acciones">
+                <button type="button" class="btn3d btn3d--sm btn3d--verde" data-guardar-prompt-manual="${esc(clave)}">💾 Guardar cambios</button>
+                ${editado ? `<button type="button" class="btn3d btn3d--sm btn3d--rojo" data-restaurar-prompt-auto="${esc(clave)}">🔄 Volver al automático</button>` : ''}
+                <button type="button" class="btn3d btn3d--sm btn3d--blanco" data-cancelar-edicion-prompt>Cancelar</button>
+              </div>
+            </div>
+          ` : `
+            <div class="vista-previa" data-salida-modal="${esc(clave)}">${htmlVista}</div>
+          `}
+
+          <div class="claqueta-modal__acciones">
+            <button type="button" class="btn3d btn3d--gigante btn3d--${meta.colorBoton || 'verde'}" data-copiar="${esc(clave)}">📋 ¡COPIAR PROMPT!</button>
+            <button type="button" class="btn3d btn3d--amarillo" data-toggle-editar-prompt="${esc(clave)}">
+              ${modalPromptEditando ? '👁️ Ver vista previa' : '✏️ Editar a mano'}
+            </button>
+            ${editado && !modalPromptEditando ? `<button type="button" class="btn3d btn3d--blanco" data-restaurar-prompt-auto="${esc(clave)}" title="Volver al prompt generado automáticamente">🔄 Automático</button>` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function abrirModalPrompt(clave, iniciarEditando = false) {
+    modalPromptClaveActiva = clave;
+    modalPromptEditando = iniciarEditando;
+    renderModalPrompt();
+    const dlg = $('#dlg-prompt-prod');
+    if (dlg && !dlg.open) dlg.showModal();
+    if (iniciarEditando) {
+      setTimeout(() => $('#textarea-prompt-manual')?.focus(), 80);
+    }
   }
 
   function pasosFlow(lista, claveHecho, textoHecho) {
@@ -378,47 +486,68 @@ window.crearProduccion = function crearProduccion(api) {
   }
 
   // ---------- Guía de Anécdota en 3 actos ----------
+  const ACTOS_META = {
+    inicio: {
+      id: 'inicio',
+      corto: '1 · Inicio',
+      etiqueta: 'Inicio (¿Cómo empieza?)',
+      emoji: '🌱',
+      color: '#0284c7'
+    },
+    nudo: {
+      id: 'nudo',
+      corto: '2 · Nudo / Problema',
+      etiqueta: 'Nudo / Problema (¿Qué ocurre de inesperado?)',
+      emoji: '⚡',
+      color: '#d97706'
+    },
+    desenlace: {
+      id: 'desenlace',
+      corto: '3 · Desenlace',
+      etiqueta: 'Desenlace (¿Cómo termina?)',
+      emoji: '🏁',
+      color: '#16a34a'
+    }
+  };
+
+  function actoDeEscena(k) {
+    const s = prod.escenas[k];
+    if (k === 0 && !s?.acto) return 'inicio';
+    return ACTOS_META[s?.acto] ? s.acto : (k === 0 ? 'inicio' : (k === 1 ? 'nudo' : 'desenlace'));
+  }
+
   function infoActoDeEscena(k) {
     const a = prod.anecdota || { inicio: '', nudo: '', desenlace: '' };
-    if (k === 0) {
-      return {
-        numActo: 1,
-        etiqueta: 'Acto 1 · Inicio (¿Cómo empieza?)',
-        emoji: '🌱',
-        color: '#0284c7',
-        texto: (a.inicio || '').trim()
-      };
-    }
-    if (k === 1) {
-      return {
-        numActo: 2,
-        etiqueta: 'Acto 2 · Nudo / Problema (¿Qué ocurre de inesperado?)',
-        emoji: '⚡',
-        color: '#d97706',
-        texto: (a.nudo || '').trim()
-      };
-    }
+    const claveActo = actoDeEscena(k);
+    const meta = ACTOS_META[claveActo] || ACTOS_META.inicio;
     return {
-      numActo: 3,
-      etiqueta: 'Acto 3 · Desenlace (¿Cómo termina?)',
-      emoji: '🏁',
-      color: '#16a34a',
-      texto: (a.desenlace || '').trim()
+      ...meta,
+      texto: (a[meta.id] || '').trim()
     };
   }
 
   function bannerAnecdotaEscenaHTML(k) {
     const info = infoActoDeEscena(k);
+    const actoActual = info.id;
     return `
       <div class="banner-anecdota-escena" id="banner-anecdota-escena" style="--ac:${info.color}">
         <div class="banner-anecdota-escena__cab">
-          <span class="badge-mini" style="background:${info.color};color:#fff;border-color:var(--borde)">${info.emoji} Escena ${k + 1} → ${esc(info.etiqueta)}</span>
+          <div class="banner-anecdota-escena__selector">
+            <span class="banner-anecdota-escena__preg">📖 ¿A qué parte de la anécdota pertenece la <b>Escena ${k + 1}</b>?</span>
+            <div class="banner-anecdota-escena__pills">
+              ${Object.values(ACTOS_META).map((m) => `
+                <button type="button" class="pill-acto ${actoActual === m.id ? 'activa' : ''}" style="--ac:${m.color}" data-elegir-acto="${m.id}">
+                  ${m.emoji} ${esc(m.corto)}
+                </button>
+              `).join('')}
+            </div>
+          </div>
           ${info.texto ? `<button type="button" class="chip-filtro" data-usar-anecdota="${esc(info.texto)}">✨ Pasar al paso 3</button>` : ''}
         </div>
         <p class="banner-anecdota-escena__txt">
           ${info.texto
-            ? `📖 <b>Tu idea para esta parte:</b> "${esc(info.texto)}"`
-            : `💡 <i>Aún no escribiste el <b>${esc(info.etiqueta.split('·')[1].trim())}</b> arriba en "La Anécdota de tu Película". ¡Puedes escribirlo arriba para guiarte!</i>`}
+            ? `${info.emoji} <b>${esc(info.etiqueta)}:</b> "${esc(info.texto)}"`
+            : `💡 <i>Aún no escribiste el <b>${esc(info.etiqueta)}</b> arriba en "La Anécdota de tu Película". ¡Puedes escribirlo arriba para guiarte!</i>`}
         </p>
       </div>
     `;
@@ -532,10 +661,15 @@ window.crearProduccion = function crearProduccion(api) {
   }
 
   // ---------- Etapa 4: Mi película ----------
-  function promptsDeEscena(s) {
+  function promptsDeEscena(s, j) {
     return s.modo === 'fotogramas'
-      ? [['Imagen inicial', promptImagenInicial(s)], ['Video (Fotogramas a video)', promptEscenaFotogramas(s)]]
-      : [['Video (Ingredientes a video)', promptEscenaIngredientes(s)]];
+      ? [
+          ['Imagen inicial', textoFinalDe(`s${j}-img`, promptImagenInicial(s)), `s${j}-img`],
+          ['Video (Fotogramas a video)', textoFinalDe(`s${j}`, promptEscenaFotogramas(s)), `s${j}`]
+        ]
+      : [
+          ['Video (Ingredientes a video)', textoFinalDe(`s${j}`, promptEscenaIngredientes(s)), `s${j}`]
+        ];
   }
 
   function guionCompleto() {
@@ -550,12 +684,15 @@ window.crearProduccion = function crearProduccion(api) {
       if ((a.desenlace || '').trim()) L.push(`  • Desenlace: ${a.desenlace.trim()}`);
       L.push('');
     }
-    prod.personajes.forEach((_, i) => { L.push(`🧑‍🚀 PERSONAJE: ${nombreDe(i)} (imagen)`, promptPersonaje(i), ''); });
-    L.push('🏞️ ESCENARIO (imagen)', promptEscenario(), '');
+    prod.personajes.forEach((_, i) => {
+      L.push(`🧑‍🚀 PERSONAJE: ${nombreDe(i)} (imagen)`, textoFinalDe(`p${i}`, promptPersonaje(i)), '');
+    });
+    L.push('🏞️ ESCENARIO (imagen)', textoFinalDe('esc', promptEscenario()), '');
     prod.escenas.forEach((s, j) => {
       const dlg = (s.dialogo || '').trim();
-      promptsDeEscena(s).forEach(([t, p]) => {
-        L.push(`🎬 ESCENA ${j + 1} — ${t}`);
+      const infoActo = infoActoDeEscena(j);
+      promptsDeEscena(s, j).forEach(([t, p]) => {
+        L.push(`🎬 ESCENA ${j + 1} (${infoActo.corto}) — ${t}`);
         if (dlg && t.startsWith('Video')) {
           L.push(`💬 Diálogo (${unirNombres(actoresDe(s))}): "${dlg}"`);
         }
@@ -567,14 +704,24 @@ window.crearProduccion = function crearProduccion(api) {
 
   function vistaPelicula() {
     salida.guion = guionCompleto();
-    const tarjeta = (clave, emoji, titulo, sub, texto, ok, extraHTML = '') => {
-      salida[clave] = texto;
+    const tarjeta = (clavePrompt, emoji, titulo, sub, texto, ok, extraHTML = '') => {
+      metaClaqueta[clavePrompt] = { clave: clavePrompt, titulo: `${emoji} ${titulo} · ${sub}`, colorBoton: 'verde' };
+      salida[clavePrompt] = texto;
+      const editado = tieneEdicionManual(clavePrompt);
       return `<div class="fotograma ${ok ? 'ok' : ''}">
-        <div class="fotograma__cab"><span>${emoji}</span><strong>${titulo}</strong>${ok ? '<span class="fotograma__ok">✅</span>' : ''}</div>
+        <div class="fotograma__cab">
+          <span>${emoji}</span>
+          <strong>${titulo}</strong>
+          ${editado ? '<span class="badge-mini">✏️ Editado</span>' : ''}
+          ${ok ? '<span class="fotograma__ok">✅</span>' : ''}
+        </div>
         <small>${sub}</small>
         ${extraHTML}
         <p>${esc(texto)}</p>
-        <button type="button" class="btn3d btn3d--sm btn3d--verde" data-copiar="${esc(clave)}">📋 Copiar</button>
+        <div class="fotograma__acciones">
+          <button type="button" class="btn3d btn3d--sm btn3d--verde" data-copiar="${esc(clavePrompt)}">📋 Copiar</button>
+          <button type="button" class="btn3d btn3d--sm btn3d--amarillo" data-ver-prompt="${esc(clavePrompt)}">🎬 Ver / Editar</button>
+        </div>
       </div>`;
     };
     return `
@@ -598,16 +745,17 @@ window.crearProduccion = function crearProduccion(api) {
           <input class="input-grande" data-campo="youtubeUrl" value="${esc(prod.youtubeUrl || '')}" placeholder="Pega aquí el link de tu video cuando lo termines…">
         </div>
         <div class="cinta">
-          ${prod.personajes.map((_, i) => tarjeta(`f-p${i}`, '🧑‍🚀', esc(nombreDe(i)), 'Personaje · Imagen', promptPersonaje(i), prod.hecho[`p${i}`])).join('')}
-          ${tarjeta('f-esc', '🏞️', 'Escenario', 'Fondo · Imagen', promptEscenario(), prod.hecho.esc)}
+          ${prod.personajes.map((_, i) => tarjeta(`p${i}`, '🧑‍🚀', esc(nombreDe(i)), 'Personaje · Imagen', textoFinalDe(`p${i}`, promptPersonaje(i)), prod.hecho[`p${i}`])).join('')}
+          ${tarjeta('esc', '🏞️', 'Escenario', 'Fondo · Imagen', textoFinalDe('esc', promptEscenario()), prod.hecho.esc)}
           ${prod.escenas.map((s, j) => {
             const dlg = (s.dialogo || '').trim();
             const quienHabla = unirNombres(actoresDe(s));
-            return promptsDeEscena(s).map(([t, p], n) => {
+            const infoActo = infoActoDeEscena(j);
+            return promptsDeEscena(s, j).map(([t, p, claveReal]) => {
               const mostrarDlg = dlg && t.startsWith('Video')
                 ? `<div class="fotograma__dialogo">💬 <b>${esc(quienHabla)} dice:</b> «${esc(dlg)}»</div>`
                 : '';
-              return tarjeta(`f-s${j}-${n}`, '🎬', `Escena ${j + 1}`, esc(t), p, prod.hecho[`s${j}`], mostrarDlg);
+              return tarjeta(claveReal, '🎬', `Escena ${j + 1} (${infoActo.emoji} ${infoActo.corto})`, esc(t), p, prod.hecho[`s${j}`], mostrarDlg);
             }).join('');
           }).join('')}
         </div>
@@ -766,38 +914,56 @@ window.crearProduccion = function crearProduccion(api) {
       }
     });
 
+    function validarPaso3Escena(clave) {
+      if (prod.etapa !== 2) return true;
+      const textoACopiar = salida[clave] || '';
+      const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
+      const s = prod.escenas[k];
+      if (!(s?.accion || '').trim() || textoACopiar.includes('[¿qué hace?]')) {
+        const contPaso3 = $('#contenedor-paso-3-accion');
+        const inpPaso3 = $('#input-paso-3-accion');
+        if (contPaso3) {
+          contPaso3.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const bloqueEl = contPaso3.querySelector('.bloque-var') || contPaso3;
+          bloqueEl.classList.remove('bloque-var--alerta');
+          void bloqueEl.offsetWidth;
+          bloqueEl.classList.add('bloque-var--alerta');
+          setTimeout(() => bloqueEl.classList.remove('bloque-var--alerta'), 2200);
+        }
+        if (inpPaso3) setTimeout(() => inpPaso3.focus({ preventScroll: true }), 350);
+        toast('¡Primero escribe o elige qué hace tu personaje en el paso 3!');
+        return false;
+      }
+      return true;
+    }
+
     root.addEventListener('click', async (ev) => {
       const t = (sel) => ev.target.closest(sel);
       let b;
 
+      if ((b = t('[data-ver-prompt]'))) {
+        const clave = b.dataset.verPrompt;
+        if (!validarPaso3Escena(clave)) return;
+        abrirModalPrompt(clave, false);
+        return;
+      }
       if ((b = t('[data-copiar]'))) {
         const clave = b.dataset.copiar;
+        if (clave !== 'guion' && !validarPaso3Escena(clave)) return;
         const textoACopiar = salida[clave] || '';
-        // Validación en Etapa 3: si falta la acción del paso 3 ("[¿qué hace?]"), avisar y llevar al paso 3
-        if (prod.etapa === 2) {
-          const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
-          const s = prod.escenas[k];
-          if (!(s?.accion || '').trim() || textoACopiar.includes('[¿qué hace?]')) {
-            const contPaso3 = $('#contenedor-paso-3-accion');
-            const inpPaso3 = $('#input-paso-3-accion');
-            if (contPaso3) {
-              contPaso3.scrollIntoView({ behavior: 'smooth', block: 'center' });
-              const bloqueEl = contPaso3.querySelector('.bloque-var') || contPaso3;
-              bloqueEl.classList.remove('bloque-var--alerta');
-              void bloqueEl.offsetWidth;
-              bloqueEl.classList.add('bloque-var--alerta');
-              setTimeout(() => bloqueEl.classList.remove('bloque-var--alerta'), 2200);
-            }
-            if (inpPaso3) setTimeout(() => inpPaso3.focus({ preventScroll: true }), 350);
-            toast('¡Primero escribe o elige qué hace tu personaje en el paso 3!');
-            return;
-          }
-        }
         await copiar(textoACopiar);
         const txt = b.innerHTML;
         b.innerHTML = '✅ ¡COPIADO!';
         setTimeout(() => { b.innerHTML = txt; }, 1600);
         toast('📋 ¡Copiado! Ahora pégalo en Flow');
+        return;
+      }
+      if ((b = t('[data-elegir-acto]'))) {
+        const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
+        prod.escenas[k].acto = b.dataset.elegirActo;
+        guardar();
+        const ban = $('#banner-anecdota-escena');
+        if (ban) ban.outerHTML = bannerAnecdotaEscenaHTML(k);
         return;
       }
       if ((b = t('[data-usar-anecdota]'))) {
@@ -855,13 +1021,13 @@ window.crearProduccion = function crearProduccion(api) {
       }
       if (t('[data-add-escena]')) {
         const anterior = prod.escenas[prod.escenas.length - 1];
-        const nueva = nuevaEscena();
-        // La nueva escena hereda personajes y estilo de sonido, y propone continuar desde la anterior
-        if (anterior) { nueva.quien = anterior.quien; nueva.audioId = anterior.audioId; nueva.modo = 'fotogramas'; }
+        const actoSugerido = prod.escenas.length === 1 ? 'nudo' : (anterior?.acto || 'desenlace');
+        const nueva = nuevaEscena(actoSugerido);
+        if (anterior) { nueva.quien = anterior.quien; nueva.audioId = anterior.audioId; }
         prod.escenas.push(nueva);
         prod.escenaActiva = prod.escenas.length - 1;
         guardar(); render();
-        toast('🎬 Nueva escena: puedes continuar desde el final de la anterior');
+        toast('🎬 Nueva escena creada: elige a qué parte de la anécdota pertenece');
         return;
       }
       if ((b = t('[data-del-escena]'))) {
@@ -890,6 +1056,84 @@ window.crearProduccion = function crearProduccion(api) {
         toast('🎬 ¡Nueva película! Empieza creando tus personajes');
       }
     });
+
+    const dlgPrompt = $('#dlg-prompt-prod');
+    if (dlgPrompt) {
+      dlgPrompt.addEventListener('click', async (ev) => {
+        if (ev.target === dlgPrompt) {
+          dlgPrompt.close();
+          return;
+        }
+        const t = (sel) => ev.target.closest(sel);
+        let b;
+
+        if (t('[data-cerrar-modal-prompt]')) {
+          dlgPrompt.close();
+          return;
+        }
+        if ((b = t('[data-toggle-editar-prompt]'))) {
+          modalPromptEditando = !modalPromptEditando;
+          renderModalPrompt();
+          if (modalPromptEditando) {
+            setTimeout(() => $('#textarea-prompt-manual')?.focus(), 60);
+          }
+          return;
+        }
+        if (t('[data-cancelar-edicion-prompt]')) {
+          modalPromptEditando = false;
+          renderModalPrompt();
+          return;
+        }
+        if ((b = t('[data-guardar-prompt-manual]'))) {
+          const clave = b.dataset.guardarPromptManual;
+          const nuevoTxt = ($('#textarea-prompt-manual')?.value || '').trim();
+          prod.customPrompts = prod.customPrompts || {};
+          if (nuevoTxt && nuevoTxt !== (salidaAuto[clave] || '').trim()) {
+            prod.customPrompts[clave] = nuevoTxt;
+            salida[clave] = nuevoTxt;
+          } else {
+            delete prod.customPrompts[clave];
+            salida[clave] = salidaAuto[clave] || nuevoTxt;
+          }
+          modalPromptEditando = false;
+          guardar();
+          if (prod.etapa === 3) render(); else renderSalida();
+          renderModalPrompt();
+          toast('✏️ Prompt actualizado a mano');
+          return;
+        }
+        if ((b = t('[data-restaurar-prompt-auto]'))) {
+          const clave = b.dataset.restaurarPromptAuto;
+          if (prod.customPrompts) delete prod.customPrompts[clave];
+          salida[clave] = salidaAuto[clave] || '';
+          modalPromptEditando = false;
+          guardar();
+          if (prod.etapa === 3) render(); else renderSalida();
+          renderModalPrompt();
+          toast('🔄 Prompt restaurado al automático');
+          return;
+        }
+        if ((b = t('[data-copiar]'))) {
+          const clave = b.dataset.copiar;
+          // Si está editando a mano y toca Copiar directamente, guardamos primero lo que escribió
+          if (modalPromptEditando) {
+            const txtArea = $('#textarea-prompt-manual');
+            if (txtArea && txtArea.value.trim()) {
+              prod.customPrompts = prod.customPrompts || {};
+              prod.customPrompts[clave] = txtArea.value.trim();
+              salida[clave] = txtArea.value.trim();
+              guardar();
+              if (prod.etapa === 3) render(); else renderSalida();
+            }
+          }
+          await copiar(salida[clave] || '');
+          const txt = b.innerHTML;
+          b.innerHTML = '✅ ¡COPIADO!';
+          setTimeout(() => { b.innerHTML = txt; }, 1600);
+          toast('📋 ¡Copiado! Ahora pégalo en Flow');
+        }
+      });
+    }
 
     async function guardarEnCuenta() {
       const st = window.PFUsuarios?.getActiveStudent?.();

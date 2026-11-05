@@ -1927,11 +1927,138 @@ mark.var-vacia {
   flex-wrap: wrap;
 }
 
+.banner-anecdota-escena__selector {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.banner-anecdota-escena__preg {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
+.banner-anecdota-escena__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pill-acto {
+  border: 2px solid var(--borde);
+  background: #fff;
+  color: var(--tinta);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.1s, background 0.15s;
+}
+
+.pill-acto:hover {
+  transform: translateY(-1px);
+  background: #f1f5f9;
+}
+
+.pill-acto.activa {
+  background: var(--ac, #0284c7);
+  color: #fff;
+  box-shadow: 0 3px 0 var(--borde);
+}
+
 .banner-anecdota-escena__txt {
   margin: 0;
   font-size: 0.9rem;
   font-weight: 700;
   color: var(--tinta);
+}
+
+/* Claqueta compacta en columna derecha y Modal Claqueta */
+.claqueta-card__resumen {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--suave);
+}
+
+.claqueta-card__botones {
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.claqueta-card__botones .btn3d--gigante {
+  flex: 1;
+}
+
+.estado-prompt--editado {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 2px solid #eab308;
+}
+
+.modal--claqueta {
+  padding: 0;
+}
+
+.claqueta-card--modal {
+  border: none;
+  box-shadow: none;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.claqueta-card__top-der {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.claqueta-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.claqueta-editor__label {
+  font-weight: 800;
+  font-size: 0.92rem;
+  color: var(--tinta);
+}
+
+.claqueta-editor__textarea {
+  font-size: 0.98rem;
+  line-height: 1.5;
+  resize: vertical;
+  background: #fffbeb;
+}
+
+.claqueta-editor__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.claqueta-modal__acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.claqueta-modal__acciones .btn3d--gigante {
+  flex: 1;
+  min-width: 200px;
+}
+
+.fotograma__acciones {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 @keyframes pulsoAlertaPaso3 {
