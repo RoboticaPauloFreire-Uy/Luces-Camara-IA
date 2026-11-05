@@ -12,7 +12,7 @@
 window.crearProduccion = function crearProduccion(api) {
   'use strict';
 
-  const { $, esc, itemsDeCat, itemById, textoPieza, svgCamara, miniaturaImagenHTML, copiar, toast } = api;
+  const { $, esc, itemsDeCat, itemById, textoPieza, svgCamara, miniaturaImagenHTML, abrirSelectorVisual, copiar, toast } = api;
   const LS_PROD = 'lci:produccion';
   const MAX_PERSONAJES = 2; // Flow admite hasta 3 ingredientes: 2 personajes + 1 escenario
   const MAX_ESCENAS = 8;
@@ -270,11 +270,37 @@ window.crearProduccion = function crearProduccion(api) {
     return !!((prod.customPrompts?.[clave] || '').trim());
   }
 
-  function selectPiezas(cat, campo, valorId, conPropio, etiquetaPropio = '✏️ Inventar desde cero') {
-    return `<select class="select-grande" data-sel="${esc(campo)}" data-cat="${esc(cat)}">
-      ${itemsDeCat(cat).map((it) => `<option value="${esc(it.id)}" ${it.id === valorId ? 'selected' : ''}>${esc(it.icono || '')} ${esc(it.titulo)}</option>`).join('')}
-      ${conPropio ? `<option value="" ${!valorId ? 'selected' : ''}>${etiquetaPropio}</option>` : ''}
-    </select>`;
+  function botonVerTarjetas(cat, campo, conPropio = false) {
+    const n = itemsDeCat(cat).length;
+    return `<button type="button" class="btn-galeria" data-abrir-tarjetas-prod="${esc(campo)}" data-cat="${esc(cat)}" data-propio="${conPropio ? '1' : '0'}">
+      🖼️ Ver tarjetas (${n})
+    </button>`;
+  }
+
+  function tarjetaSeleccionadaHTML(cat, campo, valorId, conPropio = false, etiquetaPropio = '✏️ Inventar desde cero') {
+    const selItem = valorId ? itemById(valorId) : null;
+    if (!selItem) {
+      return `
+        <div class="pista-seleccion pista-seleccion--clic" data-abrir-tarjetas-prod="${esc(campo)}" data-cat="${esc(cat)}" data-propio="${conPropio ? '1' : '0'}" role="button" tabindex="0" title="Haz clic para ver las tarjetas">
+          <span class="pista-seleccion__icono">✏️</span>
+          <div class="pista-seleccion__info">
+            <strong>${esc(etiquetaPropio)}</strong>
+            <p>Escribe con tus propias palabras en el cuadro de abajo o pulsa "Ver tarjetas".</p>
+          </div>
+        </div>
+      `;
+    }
+    return `
+      <div class="pista-seleccion pista-seleccion--clic" data-abrir-tarjetas-prod="${esc(campo)}" data-cat="${esc(cat)}" data-propio="${conPropio ? '1' : '0'}" role="button" tabindex="0" title="Haz clic para cambiar de tarjeta">
+        <span class="pista-seleccion__icono">${esc(selItem.icono || '✨')}</span>
+        <div class="pista-seleccion__info">
+          <strong>${esc(selItem.titulo)}</strong>
+          <p>${esc(selItem.descripcion)}</p>
+        </div>
+      </div>
+      ${selItem.imagen && miniaturaImagenHTML ? miniaturaImagenHTML(selItem) : ''}
+      ${selItem.anim && svgCamara ? svgCamara(selItem.anim, selItem) : ''}
+    `;
   }
 
   function pills(campo, opciones, actual) {
@@ -422,11 +448,10 @@ window.crearProduccion = function crearProduccion(api) {
     const i = Math.min(prod.personajeActivo, prod.personajes.length - 1);
     const p = prod.personajes[i];
     const base = `personajes.${i}`;
-    const estItem = itemById(prod.estiloId);
     return `
-      ${bloque('🎨', '#8ac926', '🎨 Estilo de TODA tu película <small class="nota">(se usa en todas las etapas para que todo combine)</small>',
-        `${selectPiezas('estilo', 'estiloId', prod.estiloId, false)}
-         ${estItem ? `<p class="pista-texto">💡 ${esc(estItem.descripcion)}</p>${miniaturaImagenHTML ? miniaturaImagenHTML(estItem) : ''}` : ''}`)}
+      ${bloque('🎨', '#8ac926', '🎨 ¿Con qué estilo visual quieres que se vea tu película?',
+        tarjetaSeleccionadaHTML('estilo', 'estiloId', prod.estiloId, false),
+        botonVerTarjetas('estilo', 'estiloId', false))}
 
       <div class="subtabs-prod">
         ${prod.personajes.map((_, k) => `<button type="button" class="btn3d btn3d--sm ${k === i ? 'btn3d--activo' : 'btn3d--blanco'}" style="--c:#6a4c93" data-personaje-activo="${k}">🧑‍🚀 ${esc(nombreDe(k))} ${prod.hecho[`p${k}`] ? '✅' : ''}</button>`).join('')}
@@ -436,9 +461,10 @@ window.crearProduccion = function crearProduccion(api) {
 
       ${bloque(1, '#6a4c93', '🏷️ ¿Cómo se llama tu personaje?',
         `<input class="input-grande" data-campo="${base}.nombre" value="${esc(p.nombre)}" maxlength="30" placeholder="Ej: Bip, Luna, Capitán Coco">`)}
-      ${bloque(2, '#6a4c93', '🧑‍🚀 ¿Quién o qué es? <small class="nota">Elige uno para empezar y cámbialo a tu gusto</small>',
-        `${selectPiezas('personaje', `${base}.baseId`, p.baseId, true)}
-         <textarea class="input-grande" rows="3" data-campo="${base}.descripcion" placeholder="Ej: un zorro inventor de pelaje naranja con antiparras de cobre">${esc(p.descripcion)}</textarea>`)}
+      ${bloque(2, '#6a4c93', '🧑‍🚀 ¿Quién o qué es? <small class="nota">Elige una tarjeta o cámbialo a tu gusto</small>',
+        `${tarjetaSeleccionadaHTML('personaje', `${base}.baseId`, p.baseId, true)}
+         <textarea class="input-grande" rows="3" data-campo="${base}.descripcion" placeholder="Ej: un zorro inventor de pelaje naranja con antiparras de cobre">${esc(p.descripcion)}</textarea>`,
+        botonVerTarjetas('personaje', `${base}.baseId`, true))}
       ${bloque(3, '#6a4c93', '👕 ¿Qué ropa o accesorios lleva? <small class="nota">(opcional)</small>',
         `<input class="input-grande" data-campo="${base}.ropa" value="${esc(p.ropa)}" placeholder="Ej: una capa roja y zapatillas con luces">`)}
       ${bloque(4, '#6a4c93', '⭐ ¿Tiene algún detalle especial? <small class="nota">(opcional)</small>',
@@ -461,13 +487,12 @@ window.crearProduccion = function crearProduccion(api) {
   // ---------- Etapa 2: Escenario ----------
   function formEscenario() {
     const e = prod.escenario;
-    const escItem = itemById(e.baseId);
     return `
       ${chipEstilo()}
-      ${bloque(1, '#00b4d8', '🏞️ ¿En qué lugar ocurre tu película? <small class="nota">Elige uno y cámbialo a tu gusto</small>',
-        `${selectPiezas('escenario', 'escenario.baseId', e.baseId, true)}
-         ${escItem ? `<p class="pista-texto">💡 ${esc(escItem.descripcion)}</p>${miniaturaImagenHTML ? miniaturaImagenHTML(escItem) : ''}` : ''}
-         <textarea class="input-grande" rows="3" data-campo="escenario.descripcion" placeholder="Ej: una biblioteca gigante con libros que vuelan">${esc(e.descripcion)}</textarea>`)}
+      ${bloque(1, '#00b4d8', '🏞️ ¿En qué lugar ocurre tu película? <small class="nota">Elige una tarjeta y cámbialo a tu gusto</small>',
+        `${tarjetaSeleccionadaHTML('escenario', 'escenario.baseId', e.baseId, true)}
+         <textarea class="input-grande" rows="3" data-campo="escenario.descripcion" placeholder="Ej: una biblioteca gigante con libros que vuelan">${esc(e.descripcion)}</textarea>`,
+        botonVerTarjetas('escenario', 'escenario.baseId', true))}
       ${bloque(2, '#00b4d8', '☀️ ¿A qué hora del día?', pills('escenario.hora', HORAS, e.hora))}
       ${bloque(3, '#00b4d8', '🌦️ ¿Cómo está el clima?', pills('escenario.clima', CLIMAS, e.clima))}
       ${bloque(4, '#00b4d8', '✨ ¿Algún detalle extra? <small class="nota">(opcional)</small>',
@@ -625,14 +650,16 @@ window.crearProduccion = function crearProduccion(api) {
           <div class="ideas">💡 Ideas: ${IDEAS_ACCION.map((a) => `<button type="button" class="chip-filtro" data-idea="${esc(a)}">${esc(a)}</button>`).join('')}</div>`)}
       </div>
 
-      ${bloque(4, '#1982c4', '🎥 ¿Cómo se mueve la cámara?', `
-        ${selectPiezas('camara', `${base}.camaraId`, s.camaraId, false)}
-        ${cam ? `<p class="pista-texto">💡 ${esc(cam.descripcion)}</p>${svgCamara(cam.anim, cam)}` : ''}`)}
+      ${bloque(4, '#1982c4', '🎥 ¿Cómo se mueve la cámara?',
+        tarjetaSeleccionadaHTML('camara', `${base}.camaraId`, s.camaraId, false),
+        botonVerTarjetas('camara', `${base}.camaraId`, false))}
 
       ${bloque(5, '#f72585', '💬 ¿Alguien dice algo? <small class="nota">(opcional, frase corta)</small>',
         `<input class="input-grande" data-campo="${base}.dialogo" value="${esc(s.dialogo)}" maxlength="120" placeholder="Ej: ¡Por fin encontré el tesoro!">`)}
 
-      ${bloque(6, '#f72585', '🔊 ¿Qué música o sonidos se escuchan?', selectPiezas('audio', `${base}.audioId`, s.audioId, false))}
+      ${bloque(6, '#f72585', '🔊 ¿Qué música o sonidos se escuchan?',
+        tarjetaSeleccionadaHTML('audio', `${base}.audioId`, s.audioId, false),
+        botonVerTarjetas('audio', `${base}.audioId`, false))}
     `;
   }
 
@@ -776,7 +803,7 @@ window.crearProduccion = function crearProduccion(api) {
       <span>🎨 Estilo de tu película: <b>${esc(it ? it.titulo : 'sin elegir')}</b></span>
       <div class="chip-estilo__acciones">
         ${it && it.imagen ? `<button type="button" class="chip-filtro" data-ver-img="${esc(it.id)}">🖼️ Ver imagen</button>` : ''}
-        <button type="button" class="chip-filtro" data-etapa="0">Cambiar</button>
+        <button type="button" class="chip-filtro" data-abrir-tarjetas-prod="estiloId" data-cat="estilo" data-propio="0">🖼️ Ver tarjetas</button>
       </div>
     </div>`;
   }
@@ -941,6 +968,28 @@ window.crearProduccion = function crearProduccion(api) {
       const t = (sel) => ev.target.closest(sel);
       let b;
 
+      if ((b = t('[data-abrir-tarjetas-prod]'))) {
+        const campo = b.dataset.abrirTarjetasProd;
+        const catId = b.dataset.cat;
+        const conPropio = b.dataset.propio === '1';
+        const actualId = getPath(prod, campo) || '';
+        if (typeof abrirSelectorVisual === 'function') {
+          abrirSelectorVisual(campo, catId, {
+            actualId,
+            conPropio,
+            onSelect: (nuevoId) => {
+              setPath(prod, campo, nuevoId);
+              if (/\.baseId$/.test(campo)) {
+                const it = nuevoId ? itemById(nuevoId) : null;
+                setPath(prod, campo.replace(/baseId$/, 'descripcion'), it ? textoPieza(it) : '');
+              }
+              guardar();
+              render();
+            }
+          });
+        }
+        return;
+      }
       if ((b = t('[data-ver-prompt]'))) {
         const clave = b.dataset.verPrompt;
         if (!validarPaso3Escena(clave)) return;

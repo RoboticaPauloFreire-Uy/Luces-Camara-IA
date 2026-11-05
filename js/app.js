@@ -900,18 +900,20 @@
   }
 
   // ---------- Modal selector visual de tarjetas (Cámara, Personaje, etc.) ----------
-  let selectorContexto = null; // { key, cat }
+  let selectorContexto = null; // { key, catId, onSelect? }
 
-  function abrirSelectorVisual(key, catId) {
+  function abrirSelectorVisual(key, catId, customOpts = null) {
     const cat = catById(catId);
     const items = itemsDeCat(catId);
-    selectorContexto = { key, catId };
+    selectorContexto = { key, catId, customOpts };
 
     $('#selector-titulo').textContent = `${cat?.emoji || '🧩'} Elige ${cat?.nombre || 'una opción'}`;
     $('#selector-sub').textContent = 'Haz clic en la imagen o video para verlo en grande, o haz clic en la tarjeta para elegirla:';
 
-    const actualId = state.vals[key]?.itemId;
-    const esOtro = !!state.vals[key]?.otro;
+    const actualId = customOpts ? customOpts.actualId : state.vals[key]?.itemId;
+    const esOtro = customOpts ? !customOpts.actualId : !!state.vals[key]?.otro;
+    const mostrarOtro = customOpts ? !!customOpts.conPropio : true;
+
     $('#selector-grilla').innerHTML = items.map((it) => `
       <div class="card-pieza-sel ${it.id === actualId ? 'activa' : ''}" role="button" tabindex="0" data-elegir-pieza="${esc(it.id)}" style="--c:${esc(cat?.color || '#4c6ef5')}">
         <div class="card-pieza-sel__top">
@@ -925,7 +927,7 @@
         ${it.imagen ? miniaturaImagenHTML(it) : ''}
         ${it.anim ? svgCamara(it.anim, it) : ''}
       </div>
-    `).join('') + `
+    `).join('') + (mostrarOtro ? `
       <div class="card-pieza-sel ${esOtro ? 'activa' : ''}" role="button" tabindex="0" data-elegir-pieza="__otro__" style="--c:${esc(cat?.color || '#4c6ef5')}">
         <div class="card-pieza-sel__top">
           <span class="card-pieza-sel__icono">✏️</span>
@@ -935,7 +937,7 @@
         </div>
         <p>Inventa y escribe con tus propias palabras esta parte de la escena.</p>
       </div>
-    `;
+    ` : '');
 
     $('#dlg-selector').showModal();
   }
@@ -1296,6 +1298,11 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
     const card = e.target.closest('[data-elegir-pieza]');
     if (!card || !selectorContexto) return;
     const val = card.dataset.elegirPieza;
+    if (selectorContexto.customOpts && typeof selectorContexto.customOpts.onSelect === 'function') {
+      $('#dlg-selector').close();
+      selectorContexto.customOpts.onSelect(val === '__otro__' ? '' : val);
+      return;
+    }
     if (val === '__otro__') {
       state.vals[selectorContexto.key] = { otro: true, text: '' };
     } else {
@@ -1490,6 +1497,7 @@ window.BIBLIOTECA = ${JSON.stringify(state.data, null, 2)};
       textoPieza,
       svgCamara,
       miniaturaImagenHTML,
+      abrirSelectorVisual,
       copiar: copiarAlPortapapeles,
       toast
     });
