@@ -605,6 +605,9 @@ window.crearProduccion = function crearProduccion(api) {
             <h2>La Anécdota de tu Película <small class="nota">(tu historia en 3 pasos cortos)</small></h2>
             <p>Resume de qué trata tu historia antes de animar: te servirá de guía en cada escena.</p>
           </div>
+          <a class="btn3d btn3d--sm btn3d--blanco" href="folleto-tarea.html" target="_blank" rel="noopener" style="margin-left:auto; text-decoration:none;" title="Ver e imprimir hoja de planificación en papel">
+            📄 Imprimir Folleto
+          </a>
         </div>
         <div class="anecdota-grid">
           <label class="anecdota-item" style="--ac:#0284c7">

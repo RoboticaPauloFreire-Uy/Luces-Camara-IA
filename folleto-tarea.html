@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Folleto de Tarea · Planifica tu Película con IA 🎬</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --tinta: #0f172a;
+      --suave: #475569;
+      --borde: #0f172a;
+      --fondo: #f8fafc;
+      --c-amarillo: #fef08a;
+      --c-verde: #bbf7d0;
+      --c-azul: #bae6fd;
+      --c-morado: #e9d5ff;
+      --c-rojo: #fecdd3;
+      --c-naranja: #fed7aa;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: 'Nunito', sans-serif;
+      color: var(--tinta);
+      background: #e2e8f0;
+      line-height: 1.4;
+    }
+
+    /* Barra flotante para imprimir en pantalla */
+    .barra-imprimir {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+    }
+    .barra-imprimir h3 {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.15rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .barra-imprimir p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #94a3b8;
+    }
+    .btn-print {
+      background: #22c55e;
+      color: #052e16;
+      border: 2px solid #fff;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 8px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.1s;
+    }
+    .btn-print:hover {
+      transform: scale(1.04);
+      background: #16a34a;
+      color: #fff;
+    }
+    .btn-volver {
+      background: #334155;
+      color: #fff;
+      border: 1px solid #64748b;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.9rem;
+      padding: 8px 14px;
+      border-radius: 10px;
+      text-decoration: none;
+    }
+
+    /* Hoja de trabajo */
+    .hoja {
+      max-width: 900px;
+      margin: 0 auto 24px;
+      background: #fff;
+      border: 3px solid var(--borde);
+      border-radius: 18px;
+      padding: 28px 32px;
+      box-shadow: 0 10px 0 var(--borde);
+      page-break-after: always;
+    }
+
+    .hoja:last-child {
+      page-break-after: auto;
+      margin-bottom: 0;
+    }
+
+    /* Encabezado */
+    .cabecera-folleto {
+      border-bottom: 3px solid var(--borde);
+      padding-bottom: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .cabecera-folleto__titulos h1 {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cabecera-folleto__titulos p {
+      margin: 4px 0 0;
+      font-size: 0.95rem;
+      color: var(--suave);
+      font-weight: 700;
+    }
+
+    .badge-colegio {
+      background: #fef08a;
+      border: 2px solid var(--borde);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* Ficha de datos del alumno */
+    .datos-director {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 12px;
+      background: #f8fafc;
+      border: 2px solid var(--borde);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+    }
+
+    .campo-dato {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .campo-dato label {
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--suave);
+      letter-spacing: 0.5px;
+    }
+    .linea-escribir {
+      border-bottom: 2px dashed #94a3b8;
+      height: 26px;
+    }
+
+    .campo-titulo-pelicula {
+      grid-column: 1 / -1;
+      margin-top: 4px;
+    }
+
+    /* Secciones del folleto */
+    .seccion {
+      margin-bottom: 22px;
+      border: 2.5px solid var(--borde);
+      border-radius: 14px;
+      padding: 16px 18px;
+      background: #fff;
+      page-break-inside: avoid;
+    }
+
+    .seccion__cab {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8px;
+    }
+    .paso-num {
+      width: 28px;
+      height: 28px;
+      background: var(--borde);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .seccion__cab h2 {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.22rem;
+    }
+    .seccion__desc {
+      font-size: 0.88rem;
+      color: var(--suave);
+      margin: -6px 0 12px 38px;
+    }
+
+    /* La anécdota en 3 actos */
+    .grid-3-actos {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .caja-acto {
+      background: #f8fafc;
+      border: 2px solid var(--borde);
+      border-radius: 12px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .caja-acto--inicio { border-top: 6px solid #0284c7; background: #f0f9ff; }
+    .caja-acto--nudo { border-top: 6px solid #d97706; background: #fffbeb; }
+    .caja-acto--desenlace { border-top: 6px solid #16a34a; background: #f0fdf4; }
+
+    .caja-acto__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .caja-acto__badge {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 6px;
+      color: #fff;
+    }
+    .caja-acto--inicio .caja-acto__badge { background: #0284c7; }
+    .caja-acto--nudo .caja-acto__badge { background: #d97706; }
+    .caja-acto--desenlace .caja-acto__badge { background: #16a34a; }
+
+    .caja-acto__preg {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--suave);
+    }
+    .lineas-pautadas {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .lineas-pautadas span {
+      border-bottom: 1.5px dashed #cbd5e1;
+      height: 20px;
+    }
+
+    /* Cuadrícula de Ingredientes */
+    .grid-ingredientes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .caja-ingrediente {
+      border: 2px solid var(--borde);
+      border-radius: 12px;
+      padding: 12px 14px;
+      background: #fafaf9;
+    }
+    .caja-ingrediente h3 {
+      margin: 0 0 10px;
+      font-size: 0.98rem;
+      font-family: 'Fredoka', sans-serif;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .fila-linea {
+      display: flex;
+      align-items: flex-end;
+      gap: 6px;
+      margin-bottom: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .fila-linea label {
+      white-space: nowrap;
+      color: var(--suave);
+    }
+    .fila-linea .linea {
+      flex: 1;
+      border-bottom: 1.5px dashed #94a3b8;
+      height: 20px;
+    }
+
+    /* Ficha de Escenas (Storyboard / Plan de Rodaje) */
+    .caja-escena {
+      border: 2px solid var(--borde);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      background: #fff;
+    }
+    .caja-escena:last-child {
+      margin-bottom: 0;
+    }
+    .caja-escena__cab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+      border-bottom: 1.5px dashed #cbd5e1;
+      padding-bottom: 6px;
+    }
+    .caja-escena__cab h3 {
+      margin: 0;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.05rem;
+    }
+    .caja-escena__opciones {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--suave);
+    }
+
+    .check-cuadro {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 8px;
+    }
+    .cuadrito {
+      width: 14px;
+      height: 14px;
+      border: 2px solid var(--borde);
+      display: inline-block;
+      border-radius: 3px;
+    }
+
+    .escena-detalles {
+      display: grid;
+      grid-template-columns: 80px 1.4fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .boceto-box {
+      border: 2px dashed #94a3b8;
+      border-radius: 8px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4px;
+      color: #94a3b8;
+      font-size: 0.72rem;
+      font-weight: 800;
+      min-height: 64px;
+    }
+    .boceto-box span {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    /* Caja de tips y checklist final */
+    .grid-pie {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 14px;
+    }
+
+    .caja-tips {
+      background: #fefce8;
+      border: 2px solid #eab308;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+    }
+    .caja-tips h4 {
+      margin: 0 0 6px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.95rem;
+      color: #854d0e;
+    }
+    .caja-tips ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .caja-tips li {
+      margin-bottom: 4px;
+    }
+
+    .caja-check {
+      background: #f0fdf4;
+      border: 2px solid #22c55e;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 0.85rem;
+    }
+    .caja-check h4 {
+      margin: 0 0 8px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 0.95rem;
+      color: #166534;
+    }
+    .lista-check {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: 700;
+    }
+    .item-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pie-pagina {
+      margin-top: 16px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--suave);
+      font-weight: 700;
+    }
+
+    /* Estilos para impresión */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+      }
+      .barra-imprimir {
+        display: none !important;
+      }
+      .hoja {
+        border: 2px solid #000;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 15mm 15mm;
+        margin: 0;
+        width: 100%;
+        max-width: none;
+        page-break-after: always;
+      }
+      .hoja:last-child {
+        page-break-after: auto;
+      }
+      .caja-acto, .caja-ingrediente, .caja-escena, .seccion {
+        border-color: #000 !important;
+      }
+      .linea-escribir, .fila-linea .linea, .lineas-pautadas span {
+        border-bottom-color: #666 !important;
+      }
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra superior no imprimible con botón para imprimir -->
+  <aside class="barra-imprimir" aria-label="Herramientas de impresión">
+    <div>
+      <h3>📄 Folleto de Tarea · Guía del Director Escolar</h3>
+      <p>Diseñado para imprimir en 2 carillas (A4 o Carta). Los alumnos pueden pensar su anécdota y planificar su cortometraje antes de usar Google Flow.</p>
+    </div>
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <a href="index.html" class="btn-volver">⬅ Volver al Estudio</a>
+      <button type="button" class="btn-print" onclick="window.print()">🖨️ Imprimir Folleto</button>
+    </div>
+  </aside>
+
+  <!-- ==================== PÁGINA 1: LA HISTORIA Y LOS INGREDIENTES ==================== -->
+  <main class="hoja">
+    <!-- Encabezado -->
+    <header class="cabecera-folleto">
+      <div class="cabecera-folleto__titulos">
+        <h1>🎬 Taller de Cine e IA: ¡Crea tu Cortometraje!</h1>
+        <p>Plan de Producción: piensa tu anécdota, diseña tus personajes y prepara tu película en Google Flow</p>
+      </div>
+      <div class="badge-colegio">
+        🏫 Colegio Paulo Freire<br>
+        🤖 Robótica y Tecnología
+      </div>
+    </header>
+
+    <!-- Ficha de datos del director -->
+    <section class="datos-director" aria-label="Datos del estudiante">
+      <div class="campo-dato">
+        <label>Nombre del Director/a:</label>
+        <div class="linea-escribir"></div>
+      </div>
+      <div class="campo-dato">
+        <label>Curso / Grupo:</label>
+        <div class="linea-escribir"></div>
+      </div>
+      <div class="campo-dato">
+        <label>Fecha:</label>
+        <div class="linea-escribir"></div>
+      </div>
+      <div class="campo-dato campo-titulo-pelicula">
+        <label>🎞️ Título de tu Película:</label>
+        <div class="linea-escribir"></div>
+      </div>
+    </section>
+
+    <!-- Paso 1: La Anécdota en 3 Actos -->
+    <section class="seccion" aria-label="Paso 1: La historia en 3 actos">
+      <div class="seccion__cab">
+        <span class="paso-num">1</span>
+        <h2>La Anécdota de tu Película (Tu historia en 3 pasos cortos)</h2>
+      </div>
+      <p class="seccion__desc">Una buena película cuenta algo que le ocurre a un personaje. Resúmelo en 3 momentos antes de grabar:</p>
+
+      <div class="grid-3-actos">
+        <!-- Acto 1 -->
+        <article class="caja-acto caja-acto--inicio">
+          <div class="caja-acto__top">
+            <span class="caja-acto__badge">🌱 1 · INICIO</span>
+          </div>
+          <div class="caja-acto__preg">¿Cómo empieza? ¿Quién es y dónde está?</div>
+          <div class="lineas-pautadas">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </article>
+
+        <!-- Acto 2 -->
+        <article class="caja-acto caja-acto--nudo">
+          <div class="caja-acto__top">
+            <span class="caja-acto__badge">⚡ 2 · NUDO</span>
+          </div>
+          <div class="caja-acto__preg">¿Qué ocurre de inesperado o qué problema surge?</div>
+          <div class="lineas-pautadas">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </article>
+
+        <!-- Acto 3 -->
+        <article class="caja-acto caja-acto--desenlace">
+          <div class="caja-acto__top">
+            <span class="caja-acto__badge">🏁 3 · DESENLACE</span>
+          </div>
+          <div class="caja-acto__preg">¿Cómo se resuelve o cómo termina la aventura?</div>
+          <div class="lineas-pautadas">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Paso 2: Los Ingredientes Visuales -->
+    <section class="seccion" aria-label="Paso 2: Ingredientes visuales">
+      <div class="seccion__cab">
+        <span class="paso-num">2</span>
+        <h2>Tus Ingredientes Visuales (Personajes y Escenario)</h2>
+      </div>
+      <p class="seccion__desc">En Google Flow, primero creas las <b>imágenes</b> que luego cobrarán vida en video. ¡Mantén el mismo estilo!</p>
+
+      <div class="fila-linea" style="margin-bottom: 12px;">
+        <label>🎨 Estilo visual de la película (ej: Animación 3D Pixar, Plastilina, Anime Ghibli, Comic):</label>
+        <span class="linea"></span>
+      </div>
+
+      <div class="grid-ingredientes">
+        <!-- Personaje -->
+        <article class="caja-ingrediente">
+          <h3>🧑‍🚀 Ingrediente 1: Tu Personaje</h3>
+          <div class="fila-linea">
+            <label>Nombre:</label>
+            <span class="linea"></span>
+          </div>
+          <div class="fila-linea">
+            <label>¿Quién o qué es?:</label>
+            <span class="linea"></span>
+          </div>
+          <div class="fila-linea">
+            <label>Ropa o accesorios:</label>
+            <span class="linea"></span>
+          </div>
+          <div class="fila-linea">
+            <label>Detalle especial / expresión:</label>
+            <span class="linea"></span>
+          </div>
+        </article>
+
+        <!-- Escenario -->
+        <article class="caja-ingrediente">
+          <h3>🏞️ Ingrediente 2: El Escenario (¡Sin personajes!)</h3>
+          <div class="fila-linea">
+            <label>Lugar o mundo:</label>
+            <span class="linea"></span>
+          </div>
+          <div class="fila-linea">
+            <label>Hora del día (ej: mediodía, atardecer):</label>
+            <span class="linea"></span>
+          </div>
+          <div class="fila-linea">
+            <label>Clima (ej: soleado, lluvia mágica):</label>
+            <span class="linea"></span>
+          </div>
+          <div class="fila-linea">
+            <label>Detalles del fondo:</label>
+            <span class="linea"></span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <footer class="pie-pagina">
+      Página 1 de 2 · Pasa la hoja para planificar tus escenas y movimientos de cámara ➡️
+    </footer>
+  </main>
+
+  <!-- ==================== PÁGINA 2: PLAN DE RODAJE (ESCENAS Y CÁMARA) ==================== -->
+  <main class="hoja">
+    <!-- Encabezado pág 2 -->
+    <header class="cabecera-folleto" style="padding-bottom: 10px; margin-bottom: 14px;">
+      <div class="cabecera-folleto__titulos">
+        <h1 style="font-size: 1.5rem;">🎬 Plan de Rodaje: Tus 3 Escenas</h1>
+        <p>Recuerda: cada escena en Google Flow dura unos <b>8 segundos</b>. Pide una sola acción clara y emocionante.</p>
+      </div>
+      <div class="badge-colegio">
+        ⏱️ 8 seg. por escena
+      </div>
+    </header>
+
+    <!-- Paso 3: Las Escenas -->
+    <section class="seccion" style="margin-bottom: 16px;">
+      <div class="seccion__cab">
+        <span class="paso-num">3</span>
+        <h2>Guion Técnico de Escenas (Storyboard)</h2>
+      </div>
+
+      <!-- Escena 1 -->
+      <article class="caja-escena">
+        <div class="caja-escena__cab">
+          <h3>🎬 Escena 1 · (Acto: 🌱 Inicio)</h3>
+          <div class="caja-escena__opciones">
+            Modo en Flow:
+            <span class="check-cuadro"><span class="cuadrito"></span> Ingredientes a video</span>
+            <span class="check-cuadro"><span class="cuadrito"></span> Fotogramas a video</span>
+          </div>
+        </div>
+        <div class="escena-detalles">
+          <div class="boceto-box">
+            <span>✏️</span>Boceto
+          </div>
+          <div>
+            <div class="fila-linea">
+              <label>¿Qué pasa en estos 8 segundos?:</label>
+              <span class="linea"></span>
+            </div>
+            <div class="fila-linea">
+              <label>¿Alguien dice algo? (frase corta):</label>
+              <span class="linea"></span>
+            </div>
+          </div>
+          <div>
+            <div class="fila-linea">
+              <label>Cámara:</label>
+              <span class="linea"></span>
+            </div>
+            <div class="fila-linea">
+              <label>Audio/Sonido:</label>
+              <span class="linea"></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Escena 2 -->
+      <article class="caja-escena">
+        <div class="caja-escena__cab">
+          <h3>🎬 Escena 2 · (Acto: ⚡ Nudo / Problema)</h3>
+          <div class="caja-escena__opciones">
+            Modo en Flow:
+            <span class="check-cuadro"><span class="cuadrito"></span> Ingredientes a video</span>
+            <span class="check-cuadro"><span class="cuadrito"></span> Fotogramas a video</span>
+          </div>
+        </div>
+        <div class="escena-detalles">
+          <div class="boceto-box">
+            <span>✏️</span>Boceto
+          </div>
+          <div>
+            <div class="fila-linea">
+              <label>¿Qué pasa en estos 8 segundos?:</label>
+              <span class="linea"></span>
+            </div>
+            <div class="fila-linea">
+              <label>¿Alguien dice algo? (frase corta):</label>
+              <span class="linea"></span>
+            </div>
+          </div>
+          <div>
+            <div class="fila-linea">
+              <label>Cámara:</label>
+              <span class="linea"></span>
+            </div>
+            <div class="fila-linea">
+              <label>Audio/Sonido:</label>
+              <span class="linea"></span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Escena 3 -->
+      <article class="caja-escena">
+        <div class="caja-escena__cab">
+          <h3>🎬 Escena 3 · (Acto: 🏁 Desenlace)</h3>
+          <div class="caja-escena__opciones">
+            Modo en Flow:
+            <span class="check-cuadro"><span class="cuadrito"></span> Ingredientes a video</span>
+            <span class="check-cuadro"><span class="cuadrito"></span> Fotogramas a video</span>
+          </div>
+        </div>
+        <div class="escena-detalles">
+          <div class="boceto-box">
+            <span>✏️</span>Boceto
+          </div>
+          <div>
+            <div class="fila-linea">
+              <label>¿Qué pasa en estos 8 segundos?:</label>
+              <span class="linea"></span>
+            </div>
+            <div class="fila-linea">
+              <label>¿Alguien dice algo? (frase corta):</label>
+              <span class="linea"></span>
+            </div>
+          </div>
+          <div>
+            <div class="fila-linea">
+              <label>Cámara:</label>
+              <span class="linea"></span>
+            </div>
+            <div class="fila-linea">
+              <label>Audio/Sonido:</label>
+              <span class="linea"></span>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- Tips y Checklist final -->
+    <section class="grid-pie" aria-label="Consejos y lista de verificación">
+      <aside class="caja-tips">
+        <h4>💡 Consejos de Director de Cine con IA:</h4>
+        <ul>
+          <li><b>Regla de los 8 segundos:</b> no intentes meter 5 acciones en una sola escena. ¡Una sola acción clara queda mucho mejor!</li>
+          <li><b>Movimientos de cámara sugeridos:</b> <i>Dolly In</i> (acercarse), <i>Dron aéreo</i> (vista desde arriba), <i>Tracking</i> (seguir al personaje), <i>Órbita</i> (girar alrededor).</li>
+          <li><b>Si algo sale raro en Flow:</b> no cambies todo. Cambia <b>una sola palabra</b> en el prompt y vuelve a intentar.</li>
+        </ul>
+      </aside>
+
+      <section class="caja-check">
+        <h4>✅ Checklist de tu Cortometraje:</h4>
+        <div class="lista-check">
+          <div class="item-check"><span class="cuadrito"></span> Creé la imagen de mi personaje.</div>
+          <div class="item-check"><span class="cuadrito"></span> Creé el escenario (¡sin personas!).</div>
+          <div class="item-check"><span class="cuadrito"></span> Grabé la Escena 1 (Inicio).</div>
+          <div class="item-check"><span class="cuadrito"></span> Grabé la Escena 2 (Nudo).</div>
+          <div class="item-check"><span class="cuadrito"></span> Grabé la Escena 3 (Desenlace).</div>
+          <div class="item-check"><span class="cuadrito"></span> Junté las escenas y ¡estrené la película! 🍿</div>
+        </div>
+      </section>
+    </section>
+
+    <footer class="pie-pagina" style="margin-top: 14px;">
+      Plataforma web: <b>Luces, Cámara, IA 🎬</b> · Taller de Robótica · Colegio Paulo Freire
+    </footer>
+  </main>
+
+</body>
+</html>
