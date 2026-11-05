@@ -79,6 +79,11 @@ window.crearProduccion = function crearProduccion(api) {
       movieId: '',
       titulo: '',
       youtubeUrl: '',
+      anecdota: {
+        inicio: '',
+        nudo: '',
+        desenlace: ''
+      },
       estiloId: primero('estilo').id || '',
       personajes: [nuevoPersonaje(0)],
       escenario: nuevoEscenario(),
@@ -95,11 +100,21 @@ window.crearProduccion = function crearProduccion(api) {
     return st && st.id ? `${LS_PROD}:${st.id}` : LS_PROD;
   };
 
+  function normalizarProduccion(p) {
+    if (!p || !Array.isArray(p.personajes) || !Array.isArray(p.escenas)) return nuevaProduccion();
+    p.anecdota = {
+      inicio: '',
+      nudo: '',
+      desenlace: '',
+      ...(p.anecdota || {})
+    };
+    return p;
+  }
+
   function cargarBorradorActual() {
     let p = null;
     try { p = JSON.parse(localStorage.getItem(keyBorradorAlumno())); } catch { p = null; }
-    if (!p || !Array.isArray(p.personajes) || !Array.isArray(p.escenas)) p = nuevaProduccion();
-    return p;
+    return normalizarProduccion(p);
   }
 
   let prod = cargarBorradorActual();
@@ -120,6 +135,12 @@ window.crearProduccion = function crearProduccion(api) {
   const estiloTxt = () => {
     const it = itemById(prod.estiloId);
     return it ? textoPieza(it) : 'animación 3D colorida';
+  };
+  const estiloEscenarioTxt = () => {
+    return estiloTxt()
+      .replace(/,?\s*y\s+personajes\s+muy\s+expresivos/gi, '')
+      .replace(/,?\s*personajes\s+muy\s+expresivos/gi, '')
+      .trim();
   };
   const nombreDe = (i) => (prod.personajes[i]?.nombre || '').trim() || `personaje ${i + 1}`;
   const piezaTxt = (id, def) => {
@@ -154,7 +175,7 @@ window.crearProduccion = function crearProduccion(api) {
   function promptEscenario() {
     const e = prod.escenario;
     const desc = e.descripcion.trim() || '[describe el lugar]';
-    return `Escenario de fondo para una película, en estilo ${estiloTxt()}: ${desc}, ${e.hora}, clima ${e.clima}.` +
+    return `Escenario de fondo para una película, en estilo ${estiloEscenarioTxt()}: ${desc}, ${e.hora}, clima ${e.clima}.` +
       `${e.detalles.trim() ? ` Detalles: ${e.detalles.trim()}.` : ''}` +
       ` Vista amplia del lugar, sin personas ni personajes, sin texto.`;
   }
@@ -162,8 +183,9 @@ window.crearProduccion = function crearProduccion(api) {
   function partesEscena(s) {
     const idx = actoresDe(s);
     const accion = s.accion.trim() || '[¿qué hace?]';
-    const dialogo = s.dialogo.trim()
-      ? ` ${nombreDe(idx[0])} dice en español con voz clara: "${s.dialogo.trim()}".`
+    const textoDialogo = (s.dialogo || '').trim();
+    const dialogo = textoDialogo
+      ? ` El personaje dice en español: "${textoDialogo}".`
       : '';
     return {
       idx,
@@ -172,6 +194,7 @@ window.crearProduccion = function crearProduccion(api) {
       camara: piezaTxt(s.camaraId, 'cámara fija'),
       audio: piezaTxt(s.audioId, 'sonidos del ambiente'),
       dialogo,
+      textoDialogo,
       plural: idx.length > 1
     };
   }
@@ -354,6 +377,82 @@ window.crearProduccion = function crearProduccion(api) {
       ], 'esc', '¡Ya creé la imagen del escenario en Flow!');
   }
 
+  // ---------- Guía de Anécdota en 3 actos ----------
+  function infoActoDeEscena(k) {
+    const a = prod.anecdota || { inicio: '', nudo: '', desenlace: '' };
+    if (k === 0) {
+      return {
+        numActo: 1,
+        etiqueta: 'Acto 1 · Inicio (¿Cómo empieza?)',
+        emoji: '🌱',
+        color: '#0284c7',
+        texto: (a.inicio || '').trim()
+      };
+    }
+    if (k === 1) {
+      return {
+        numActo: 2,
+        etiqueta: 'Acto 2 · Nudo / Problema (¿Qué ocurre de inesperado?)',
+        emoji: '⚡',
+        color: '#d97706',
+        texto: (a.nudo || '').trim()
+      };
+    }
+    return {
+      numActo: 3,
+      etiqueta: 'Acto 3 · Desenlace (¿Cómo termina?)',
+      emoji: '🏁',
+      color: '#16a34a',
+      texto: (a.desenlace || '').trim()
+    };
+  }
+
+  function bannerAnecdotaEscenaHTML(k) {
+    const info = infoActoDeEscena(k);
+    return `
+      <div class="banner-anecdota-escena" id="banner-anecdota-escena" style="--ac:${info.color}">
+        <div class="banner-anecdota-escena__cab">
+          <span class="badge-mini" style="background:${info.color};color:#fff;border-color:var(--borde)">${info.emoji} Escena ${k + 1} → ${esc(info.etiqueta)}</span>
+          ${info.texto ? `<button type="button" class="chip-filtro" data-usar-anecdota="${esc(info.texto)}">✨ Pasar al paso 3</button>` : ''}
+        </div>
+        <p class="banner-anecdota-escena__txt">
+          ${info.texto
+            ? `📖 <b>Tu idea para esta parte:</b> "${esc(info.texto)}"`
+            : `💡 <i>Aún no escribiste el <b>${esc(info.etiqueta.split('·')[1].trim())}</b> arriba en "La Anécdota de tu Película". ¡Puedes escribirlo arriba para guiarte!</i>`}
+        </p>
+      </div>
+    `;
+  }
+
+  function seccionAnecdotaHTML() {
+    const a = prod.anecdota || { inicio: '', nudo: '', desenlace: '' };
+    return `
+      <section class="anecdota-card" aria-label="La Anécdota de tu Película">
+        <div class="anecdota-card__cab">
+          <span class="anecdota-card__icono">📖</span>
+          <div>
+            <h2>La Anécdota de tu Película <small class="nota">(tu historia en 3 pasos cortos)</small></h2>
+            <p>Resume de qué trata tu historia antes de animar: te servirá de guía en cada escena.</p>
+          </div>
+        </div>
+        <div class="anecdota-grid">
+          <label class="anecdota-item" style="--ac:#0284c7">
+            <span class="anecdota-item__top"><span class="anecdota-item__badge">1 · Inicio</span> <b>¿Cómo empieza?</b></span>
+            <input class="input-grande" data-campo="anecdota.inicio" value="${esc(a.inicio || '')}" maxlength="140" placeholder="Ej: Bip explora el bosque mágico buscando una semilla…">
+          </label>
+          <label class="anecdota-item" style="--ac:#d97706">
+            <span class="anecdota-item__top"><span class="anecdota-item__badge">2 · Nudo / Problema</span> <b>¿Qué ocurre de inesperado?</b></span>
+            <input class="input-grande" data-campo="anecdota.nudo" value="${esc(a.nudo || '')}" maxlength="140" placeholder="Ej: Un viento fuerte se lleva su mapa hacia el volcán…">
+          </label>
+          <label class="anecdota-item" style="--ac:#16a34a">
+            <span class="anecdota-item__top"><span class="anecdota-item__badge">3 · Desenlace</span> <b>¿Cómo termina?</b></span>
+            <input class="input-grande" data-campo="anecdota.desenlace" value="${esc(a.desenlace || '')}" maxlength="140" placeholder="Ej: Recupera el mapa con ayuda de sus amigos y celebra…">
+          </label>
+        </div>
+      </section>
+    `;
+  }
+
   // ---------- Etapa 3: Escenas ----------
   function formEscenas() {
     const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
@@ -390,9 +489,12 @@ window.crearProduccion = function crearProduccion(api) {
           ${opcionesQuien.map((o) => `<button type="button" class="pill-opcion ${s.quien === o.v ? 'activa' : ''}" data-pill="${base}.quien" data-valor="${esc(o.v)}">${esc(o.t)}</button>`).join('')}
         </div>`)}
 
-      ${bloque(3, '#ff595e', '⚡ ¿Qué pasa en estos 8 segundos? <small class="nota">Una sola acción clara</small>', `
-        <input class="input-grande" data-campo="${base}.accion" value="${esc(s.accion)}" placeholder="Ej: descubre una puerta secreta detrás de una cascada">
-        <div class="ideas">💡 Ideas: ${IDEAS_ACCION.map((a) => `<button type="button" class="chip-filtro" data-idea="${esc(a)}">${esc(a)}</button>`).join('')}</div>`)}
+      <div id="contenedor-paso-3-accion">
+        ${bannerAnecdotaEscenaHTML(k)}
+        ${bloque(3, '#ff595e', '⚡ ¿Qué pasa en estos 8 segundos? <small class="nota">Una sola acción clara</small>', `
+          <input id="input-paso-3-accion" class="input-grande" data-campo="${base}.accion" value="${esc(s.accion)}" placeholder="Ej: descubre una puerta secreta detrás de una cascada">
+          <div class="ideas">💡 Ideas: ${IDEAS_ACCION.map((a) => `<button type="button" class="chip-filtro" data-idea="${esc(a)}">${esc(a)}</button>`).join('')}</div>`)}
+      </div>
 
       ${bloque(4, '#1982c4', '🎥 ¿Cómo se mueve la cámara?', `
         ${selectPiezas('camara', `${base}.camaraId`, s.camaraId, false)}
@@ -440,21 +542,37 @@ window.crearProduccion = function crearProduccion(api) {
     const L = [];
     L.push(`🎬 ${prod.titulo.trim() || 'Mi película'} — hecha con Luces, Cámara, IA`);
     L.push(`Estilo: ${estiloTxt()}`, '');
+    const a = prod.anecdota || {};
+    if ((a.inicio || '').trim() || (a.nudo || '').trim() || (a.desenlace || '').trim()) {
+      L.push('📖 LA ANÉCDOTA DE LA PELÍCULA');
+      if ((a.inicio || '').trim()) L.push(`  • Inicio: ${a.inicio.trim()}`);
+      if ((a.nudo || '').trim()) L.push(`  • Nudo / Problema: ${a.nudo.trim()}`);
+      if ((a.desenlace || '').trim()) L.push(`  • Desenlace: ${a.desenlace.trim()}`);
+      L.push('');
+    }
     prod.personajes.forEach((_, i) => { L.push(`🧑‍🚀 PERSONAJE: ${nombreDe(i)} (imagen)`, promptPersonaje(i), ''); });
     L.push('🏞️ ESCENARIO (imagen)', promptEscenario(), '');
     prod.escenas.forEach((s, j) => {
-      promptsDeEscena(s).forEach(([t, p]) => L.push(`🎬 ESCENA ${j + 1} — ${t}`, p, ''));
+      const dlg = (s.dialogo || '').trim();
+      promptsDeEscena(s).forEach(([t, p]) => {
+        L.push(`🎬 ESCENA ${j + 1} — ${t}`);
+        if (dlg && t.startsWith('Video')) {
+          L.push(`💬 Diálogo (${unirNombres(actoresDe(s))}): "${dlg}"`);
+        }
+        L.push(p, '');
+      });
     });
     return L.join('\n');
   }
 
   function vistaPelicula() {
     salida.guion = guionCompleto();
-    const tarjeta = (clave, emoji, titulo, sub, texto, ok) => {
+    const tarjeta = (clave, emoji, titulo, sub, texto, ok, extraHTML = '') => {
       salida[clave] = texto;
       return `<div class="fotograma ${ok ? 'ok' : ''}">
         <div class="fotograma__cab"><span>${emoji}</span><strong>${titulo}</strong>${ok ? '<span class="fotograma__ok">✅</span>' : ''}</div>
         <small>${sub}</small>
+        ${extraHTML}
         <p>${esc(texto)}</p>
         <button type="button" class="btn3d btn3d--sm btn3d--verde" data-copiar="${esc(clave)}">📋 Copiar</button>
       </div>`;
@@ -482,8 +600,16 @@ window.crearProduccion = function crearProduccion(api) {
         <div class="cinta">
           ${prod.personajes.map((_, i) => tarjeta(`f-p${i}`, '🧑‍🚀', esc(nombreDe(i)), 'Personaje · Imagen', promptPersonaje(i), prod.hecho[`p${i}`])).join('')}
           ${tarjeta('f-esc', '🏞️', 'Escenario', 'Fondo · Imagen', promptEscenario(), prod.hecho.esc)}
-          ${prod.escenas.map((s, j) => promptsDeEscena(s).map(([t, p], n) =>
-            tarjeta(`f-s${j}-${n}`, '🎬', `Escena ${j + 1}`, esc(t), p, prod.hecho[`s${j}`])).join('')).join('')}
+          ${prod.escenas.map((s, j) => {
+            const dlg = (s.dialogo || '').trim();
+            const quienHabla = unirNombres(actoresDe(s));
+            return promptsDeEscena(s).map(([t, p], n) => {
+              const mostrarDlg = dlg && t.startsWith('Video')
+                ? `<div class="fotograma__dialogo">💬 <b>${esc(quienHabla)} dice:</b> «${esc(dlg)}»</div>`
+                : '';
+              return tarjeta(`f-s${j}-${n}`, '🎬', `Escena ${j + 1}`, esc(t), p, prod.hecho[`s${j}`], mostrarDlg);
+            }).join('');
+          }).join('')}
         </div>
         <div class="pasos-flow pasos-flow--final">
           <div class="pasos-flow__cab">🏁 Para terminar tu película en Flow</div>
@@ -546,6 +672,8 @@ window.crearProduccion = function crearProduccion(api) {
         </div>
       </div>
 
+      ${seccionAnecdotaHTML()}
+
       <nav class="tira-etapas" aria-label="Etapas de tu película">
         ${ETAPAS.map((et, n) => `
           <button type="button" class="etapa ${n === e ? 'activa' : ''} ${estadoEtapa(n) ? 'ok' : ''}" data-etapa="${n}" style="--c:${et.color}">
@@ -603,6 +731,16 @@ window.crearProduccion = function crearProduccion(api) {
       if (!el.dataset.campo) return;
       setPath(prod, el.dataset.campo, el.value);
       guardar();
+      if (el.dataset.campo.startsWith('anecdota.')) {
+        if (prod.etapa === 2) {
+          const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
+          const ban = $('#banner-anecdota-escena');
+          if (ban) ban.outerHTML = bannerAnecdotaEscenaHTML(k);
+        } else if (prod.etapa === 3) {
+          salida.guion = guionCompleto();
+        }
+        return;
+      }
       if (prod.etapa < 3) renderSalida();
     });
 
@@ -633,11 +771,40 @@ window.crearProduccion = function crearProduccion(api) {
       let b;
 
       if ((b = t('[data-copiar]'))) {
-        await copiar(salida[b.dataset.copiar] || '');
+        const clave = b.dataset.copiar;
+        const textoACopiar = salida[clave] || '';
+        // Validación en Etapa 3: si falta la acción del paso 3 ("[¿qué hace?]"), avisar y llevar al paso 3
+        if (prod.etapa === 2) {
+          const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
+          const s = prod.escenas[k];
+          if (!(s?.accion || '').trim() || textoACopiar.includes('[¿qué hace?]')) {
+            const contPaso3 = $('#contenedor-paso-3-accion');
+            const inpPaso3 = $('#input-paso-3-accion');
+            if (contPaso3) {
+              contPaso3.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              const bloqueEl = contPaso3.querySelector('.bloque-var') || contPaso3;
+              bloqueEl.classList.remove('bloque-var--alerta');
+              void bloqueEl.offsetWidth;
+              bloqueEl.classList.add('bloque-var--alerta');
+              setTimeout(() => bloqueEl.classList.remove('bloque-var--alerta'), 2200);
+            }
+            if (inpPaso3) setTimeout(() => inpPaso3.focus({ preventScroll: true }), 350);
+            toast('¡Primero escribe o elige qué hace tu personaje en el paso 3!');
+            return;
+          }
+        }
+        await copiar(textoACopiar);
         const txt = b.innerHTML;
         b.innerHTML = '✅ ¡COPIADO!';
         setTimeout(() => { b.innerHTML = txt; }, 1600);
         toast('📋 ¡Copiado! Ahora pégalo en Flow');
+        return;
+      }
+      if ((b = t('[data-usar-anecdota]'))) {
+        const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
+        prod.escenas[k].accion = b.dataset.usarAnecdota;
+        guardar(); render();
+        toast('✨ Idea de la anécdota copiada al paso 3');
         return;
       }
       if ((b = t('[data-etapa]'))) {
@@ -750,7 +917,7 @@ window.crearProduccion = function crearProduccion(api) {
 
     window.addEventListener('pf_load_movie', (ev) => {
       if (!ev.detail) return;
-      prod = { ...nuevaProduccion(), ...ev.detail };
+      prod = normalizarProduccion({ ...nuevaProduccion(), ...ev.detail });
       guardar();
       render();
       toast(`📂 Película "${prod.titulo}" cargada`);
