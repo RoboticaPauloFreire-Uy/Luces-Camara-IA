@@ -1978,6 +1978,21 @@ mark.var-vacia {
 }
 
 /* Claqueta compacta en columna derecha y Modal Claqueta */
+.claqueta-card--activa {
+  border-color: #6366f1;
+  box-shadow: 0 7px 0 var(--borde), 0 0 0 4px rgba(99, 102, 241, 0.22);
+}
+
+.claqueta-card__sub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 800;
+  color: var(--tinta);
+}
+
 .claqueta-card__resumen {
   margin: 0;
   font-size: 0.88rem;

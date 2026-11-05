@@ -320,13 +320,19 @@ window.crearProduccion = function crearProduccion(api) {
     </div>`;
   }
 
-  function claqueta(clave, titulo, textoAutomatico, colorBoton = 'verde') {
+  function claqueta(clave, titulo, textoAutomatico, colorBoton = 'verde', opts = {}) {
     const final = textoFinalDe(clave, textoAutomatico);
     const editado = tieneEdicionManual(clave);
     const faltaAccion = final.includes('[¿qué hace?]');
     metaClaqueta[clave] = { clave, titulo, colorBoton };
 
-    return `<div class="claqueta-card claqueta-card--compacta">
+    const checkHTML = opts.claveHecho ? `
+      <label class="check-hecho ${prod.hecho[opts.claveHecho] ? 'on' : ''}">
+        <input type="checkbox" data-hecho="${esc(opts.claveHecho)}" ${prod.hecho[opts.claveHecho] ? 'checked' : ''}>
+        <span>${opts.textoHecho}</span>
+      </label>` : '';
+
+    return `<div class="claqueta-card claqueta-card--compacta ${opts.activa ? 'claqueta-card--activa' : ''}">
       <div class="claqueta-card__franjas"></div>
       <div class="claqueta-card__cuerpo">
         <div class="claqueta-card__top">
@@ -337,11 +343,13 @@ window.crearProduccion = function crearProduccion(api) {
                 ? '<span class="estado-prompt estado-prompt--falta">⚠️ Falta paso 3</span>'
                 : '<span class="estado-prompt estado-prompt--ok">✅ Prompt listo</span>')}
         </div>
+        ${opts.subtitulo ? `<div class="claqueta-card__sub">${opts.subtitulo}</div>` : ''}
         <p class="claqueta-card__resumen">Haz clic en <b>Ver Prompt</b> para abrir la claqueta completa, copiarlo o editarlo a mano si quieres agregar algo más.</p>
         <div class="claqueta-card__botones">
           <button type="button" class="btn3d btn3d--gigante btn3d--${colorBoton}" data-ver-prompt="${esc(clave)}">🎬 VER PROMPT</button>
           <button type="button" class="btn3d btn3d--blanco" data-copiar="${esc(clave)}" title="Copiar directamente">📋 Copiar</button>
         </div>
+        ${checkHTML}
       </div>
     </div>`;
   }
@@ -420,10 +428,10 @@ window.crearProduccion = function crearProduccion(api) {
     return `<div class="pasos-flow">
       <div class="pasos-flow__cab">🧭 Qué hacer en Flow</div>
       <ol>${lista.map((p) => `<li>${p}</li>`).join('')}</ol>
-      <label class="check-hecho ${prod.hecho[claveHecho] ? 'on' : ''}">
+      ${claveHecho ? `<label class="check-hecho ${prod.hecho[claveHecho] ? 'on' : ''}">
         <input type="checkbox" data-hecho="${esc(claveHecho)}" ${prod.hecho[claveHecho] ? 'checked' : ''}>
         <span>${textoHecho}</span>
-      </label>
+      </label>` : ''}
       <a class="btn3d btn3d--morado btn3d--bloque" href="https://labs.google/fx/tools/flow" target="_blank" rel="noopener">🚀 Abrir Google Flow ↗</a>
     </div>`;
   }
@@ -475,13 +483,22 @@ window.crearProduccion = function crearProduccion(api) {
 
   function salidaPersonajes() {
     const i = Math.min(prod.personajeActivo, prod.personajes.length - 1);
-    return claqueta(`p${i}`, `🖼️ Imagen de ${esc(nombreDe(i))}`, promptPersonaje(i)) +
+    const tarjetas = prod.personajes.map((_, idx) => {
+      const nom = esc(nombreDe(idx));
+      return claqueta(`p${idx}`, `🖼️ Imagen de ${nom}`, promptPersonaje(idx), 'verde', {
+        activa: idx === i && prod.personajes.length > 1,
+        claveHecho: `p${idx}`,
+        textoHecho: `¡Ya creé la imagen de ${nom} en Flow!`
+      });
+    }).join('');
+
+    return tarjetas +
       pasosFlow([
-        'Copia el prompt de arriba.',
+        'Copia el prompt del personaje que quieras crear.',
         'En Flow, elige <b>crear una imagen</b> y pega el prompt.',
         'Si no te gusta, cambia <b>una sola cosa</b> en el formulario y prueba otra vez.',
-        `Guarda la imagen que más te guste: será el <b>ingrediente "${esc(nombreDe(i))}"</b> para tus videos.`
-      ], `p${i}`, `¡Ya creé la imagen de ${esc(nombreDe(i))} en Flow!`);
+        'Guarda la imagen que más te guste: será el <b>ingrediente</b> de ese personaje para tus videos.'
+      ]);
   }
 
   // ---------- Etapa 2: Escenario ----------
@@ -665,26 +682,56 @@ window.crearProduccion = function crearProduccion(api) {
 
   function salidaEscenas() {
     const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
-    const s = prod.escenas[k];
-    const idx = actoresDe(s);
-    if (s.modo === 'fotogramas') {
-      return claqueta(`s${k}-img`, `🅰️ Imagen inicial · Escena ${k + 1}`, promptImagenInicial(s), 'amarillo') +
-        claqueta(`s${k}`, `🅱️ Video · Escena ${k + 1}`, promptEscenaFotogramas(s)) +
-        pasosFlow([
+    const sActiva = prod.escenas[k];
+    const idxActiva = actoresDe(sActiva);
+
+    const tarjetasEscenas = prod.escenas.map((s, idx) => {
+      const esActiva = idx === k && prod.escenas.length > 1;
+      const acto = ACTOS_META[actoDeEscena(idx)] || ACTOS_META.inicio;
+      const actores = esc(unirNombres(actoresDe(s)));
+      const subBadge = `<span class="anecdota-item__badge" style="--ac:${acto.color}">${acto.emoji} ${acto.corto}</span>`;
+
+      if (s.modo === 'fotogramas') {
+        const subImg = `${subBadge} <span>🖼️ Fotograma inicial · 🧑‍🚀 ${actores}</span>`;
+        const subVid = `${subBadge} <span>🎞️ Fotogramas a video · 🧑‍🚀 ${actores}</span>`;
+        return claqueta(`s${idx}-img`, `🅰️ Imagen inicial · Escena ${idx + 1}`, promptImagenInicial(s), 'amarillo', {
+          activa: esActiva,
+          subtitulo: subImg
+        }) +
+        claqueta(`s${idx}`, `🅱️ Video · Escena ${idx + 1}`, promptEscenaFotogramas(s), 'verde', {
+          activa: esActiva,
+          subtitulo: subVid,
+          claveHecho: `s${idx}`,
+          textoHecho: `¡Ya hice la Escena ${idx + 1} en Flow!`
+        });
+      }
+
+      const subIng = `${subBadge} <span>🧩 Ingredientes: 🧑‍🚀 ${actores} + 🏞️ Escenario</span>`;
+      return claqueta(`s${idx}`, `🎬 Video · Escena ${idx + 1}`, promptEscenaIngredientes(s), 'verde', {
+        activa: esActiva,
+        subtitulo: subIng,
+        claveHecho: `s${idx}`,
+        textoHecho: `¡Ya hice la Escena ${idx + 1} en Flow!`
+      });
+    }).join('');
+
+    const pasos = sActiva.modo === 'fotogramas'
+      ? [
           '<b>Imagen inicial:</b> crea una imagen en Flow con el prompt 🅰️ (o usa el último cuadro de tu escena anterior para que la historia continúe).',
           'Elige el modo <b>Fotogramas a video</b> y sube esa imagen como <b>fotograma inicial</b>.',
           'Copia el prompt 🅱️ y pégalo.',
           'Genera el video y quédate con la mejor versión.'
-        ], `s${k}`, `¡Ya hice la Escena ${k + 1} en Flow!`);
-    }
-    return ingredientes(idx) +
-      claqueta(`s${k}`, `🎬 Video · Escena ${k + 1}`, promptEscenaIngredientes(s)) +
-      pasosFlow([
-        'En Flow, elige el modo <b>Ingredientes a video</b>.',
-        `Agrega las imágenes de tus ingredientes: <b>${esc(unirNombres(idx))}</b> y el <b>escenario</b> (máximo 3 imágenes).`,
-        'Copia el prompt de arriba y pégalo.',
-        'Genera el video. Si algo sale raro, cambia una sola cosa y vuelve a intentar.'
-      ], `s${k}`, `¡Ya hice la Escena ${k + 1} en Flow!`);
+        ]
+      : [
+          'En Flow, elige el modo <b>Ingredientes a video</b>.',
+          `Agrega las imágenes de tus ingredientes: <b>${esc(unirNombres(idxActiva))}</b> y el <b>escenario</b> (máximo 3 imágenes).`,
+          'Copia el prompt de la escena que quieras grabar y pégalo.',
+          'Genera el video. Si algo sale raro, cambia una sola cosa y vuelve a intentar.'
+        ];
+
+    return (sActiva.modo === 'fotogramas' ? '' : ingredientes(idxActiva)) +
+      tarjetasEscenas +
+      pasosFlow(pasos);
   }
 
   // ---------- Etapa 4: Mi película ----------
@@ -916,6 +963,13 @@ window.crearProduccion = function crearProduccion(api) {
         }
         return;
       }
+      if (/^personajes\.(\d+)\.nombre$/.test(el.dataset.campo)) {
+        const idx = Number(RegExp.$1);
+        const btnTab = root.querySelector(`[data-personaje-activo="${idx}"]`);
+        if (btnTab) {
+          btnTab.innerHTML = `🧑‍🚀 ${esc(nombreDe(idx))} ${prod.hecho[`p${idx}`] ? '✅' : ''}`;
+        }
+      }
       if (prod.etapa < 3) renderSalida();
     });
 
@@ -943,10 +997,17 @@ window.crearProduccion = function crearProduccion(api) {
 
     function validarPaso3Escena(clave) {
       if (prod.etapa !== 2) return true;
+      const m = /^s(\d+)$/.exec(clave);
+      if (!m) return true;
+      const j = Number(m[1]);
       const textoACopiar = salida[clave] || '';
-      const k = Math.min(prod.escenaActiva, prod.escenas.length - 1);
-      const s = prod.escenas[k];
+      const s = prod.escenas[j];
       if (!(s?.accion || '').trim() || textoACopiar.includes('[¿qué hace?]')) {
+        if (prod.escenaActiva !== j) {
+          prod.escenaActiva = j;
+          guardar();
+          render();
+        }
         const contPaso3 = $('#contenedor-paso-3-accion');
         const inpPaso3 = $('#input-paso-3-accion');
         if (contPaso3) {
@@ -958,7 +1019,7 @@ window.crearProduccion = function crearProduccion(api) {
           setTimeout(() => bloqueEl.classList.remove('bloque-var--alerta'), 2200);
         }
         if (inpPaso3) setTimeout(() => inpPaso3.focus({ preventScroll: true }), 350);
-        toast('¡Primero escribe o elige qué hace tu personaje en el paso 3!');
+        toast(`¡Primero escribe o elige qué hace tu personaje en el paso 3 de la Escena ${j + 1}!`);
         return false;
       }
       return true;
